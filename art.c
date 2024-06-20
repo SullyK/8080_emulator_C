@@ -18,6 +18,13 @@ int check_signed_bit(uint8_t number) {
   return 0;
 }
 
+int check_parity(uint8_t number){
+    
+    //TODO: resume here, figure out how parity stuff works.
+
+    return 1;
+}
+
 int add_register(*CPU cpu, uint8_t reg_value) {
 
   uint8_t result = overflow_detected(cpu->registers.A + reg_value);
