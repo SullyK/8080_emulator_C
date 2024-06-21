@@ -18,11 +18,16 @@ int check_signed_bit(uint8_t number) {
   return 0;
 }
 
-int check_parity(uint8_t number){
-    
-    //TODO: resume here, figure out how parity stuff works.
+uint8_t check_parity(uint8_t number) {
 
-    return 1;
+  // TODO: resume here, figure out how parity stuff works.
+  uint8_t counter = 0;
+  for (int x = 0; x < 8; x++) {
+    if ((number >> x) & 1) {
+      counter++;
+    }
+  }
+  return (counter % 2 == 0) ? 1 : 0;
 }
 
 int add_register(*CPU cpu, uint8_t reg_value) {
@@ -37,8 +42,8 @@ int add_register(*CPU cpu, uint8_t reg_value) {
   }
 
   // signed
-  result = check_signed_bit(result);
-  if (result) {
+  uint8_t sign = check_signed_bit(result);
+  if (sign) {
     cpu->flags.S = 1;
   } else {
     cpu->flags.S = 0;
@@ -51,4 +56,12 @@ int add_register(*CPU cpu, uint8_t reg_value) {
     cpu->flags.Z = 1;
   }
 
+  // parity
+  if (check_parity(number)) {
+    cpu->flags.P = 1;
+  } else {
+    cpu->flags.P = 0;
+  }
+
+  //aux carry TODO: figure out how this BCD and DAA aux carry stuff works. Resume here.
 }
