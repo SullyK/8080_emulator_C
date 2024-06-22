@@ -1,4 +1,5 @@
 #include <art.h>
+#include <cpu.h>
 
 int overflow_detected(uint8_t a,
                       uint8_t b) { // This checks for uint8_t overflows
@@ -12,7 +13,7 @@ int overflow_detected(uint8_t a,
 
 int check_signed_bit(uint8_t number) {
   if ((number >> 7)) { // TODO: I don't think I need == 1, should be 0 or 1
-    return 1
+    return 1;
   }
 
   return 0;
@@ -29,7 +30,7 @@ uint8_t check_parity(uint8_t number) {
   return (counter % 2 == 0) ? 1 : 0;
 }
 
-int set_aux_carry(int number) { // naive implementation
+int set_aux_carry(uint8_t number) { // naive implementation
   int extract_half_byte = number & 0xf;
 
   if (extract_half_byte > 9) {
@@ -39,9 +40,9 @@ int set_aux_carry(int number) { // naive implementation
   return 0;
 }
 
-int add_register(*CPU cpu, uint8_t reg_value) {
+int add_register(CPU *cpu, uint8_t reg_value) {
 
-  uint8_t result = overflow_detected(cpu->registers.A + reg_value);
+  uint8_t result = overflow_detected(cpu->registers.A,reg_value);
   cpu->registers.A = result;
   // carry
   if (result) {
@@ -66,7 +67,7 @@ int add_register(*CPU cpu, uint8_t reg_value) {
   }
 
   // parity
-  if (check_parity(number)) {
+  if (check_parity(result)) {
     cpu->flags.P = 1;
   } else {
     cpu->flags.P = 0;
@@ -74,9 +75,11 @@ int add_register(*CPU cpu, uint8_t reg_value) {
 
   // aux carry TODO: figure out how this BCD and DAA aux carry stuff works.
   // Resume here.
-  if (set_aux_carry(number)) {
+  if (set_aux_carry(result)) {
     cpu->flags.AC = 1;
   } else {
     cpu->flags.AC = 0;
   }
+
+  return 0;
 }
