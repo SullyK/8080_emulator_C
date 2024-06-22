@@ -19,7 +19,6 @@ int check_signed_bit(uint8_t number) {
 }
 
 uint8_t check_parity(uint8_t number) {
-
   // TODO: resume here, figure out how parity stuff works.
   uint8_t counter = 0;
   for (int x = 0; x < 8; x++) {
@@ -28,6 +27,16 @@ uint8_t check_parity(uint8_t number) {
     }
   }
   return (counter % 2 == 0) ? 1 : 0;
+}
+
+int set_aux_carry(int number) { // naive implementation
+  int extract_half_byte = number & 0xf;
+
+  if (extract_half_byte > 9) {
+    return 1;
+  }
+
+  return 0;
 }
 
 int add_register(*CPU cpu, uint8_t reg_value) {
@@ -63,5 +72,11 @@ int add_register(*CPU cpu, uint8_t reg_value) {
     cpu->flags.P = 0;
   }
 
-  //aux carry TODO: figure out how this BCD and DAA aux carry stuff works. Resume here.
+  // aux carry TODO: figure out how this BCD and DAA aux carry stuff works.
+  // Resume here.
+  if (set_aux_carry(number)) {
+    cpu->flags.AC = 1;
+  } else {
+    cpu->flags.AC = 0;
+  }
 }
