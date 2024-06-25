@@ -5,3 +5,15 @@ main
 *.exe
 
 googletest/build/
+googletest/*.o
+googletest/*.a
+googletest/*.so
+googletest/*.exe
+googletest/Makefile
+googletest/CMakeCache.txt
+googletest/CMakeFiles/
+googletest/*.cmake
+googletest/CTestTestfile.cmake
+googletest/Testing/
+googletest/*.swp
+googletest/*~
