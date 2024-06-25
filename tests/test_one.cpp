@@ -13,9 +13,6 @@ TEST(OverflowTest, ExampleTest){
 
 }
 
-TEST(testOne, ExampleTest){
-    ASSERT_FALSE(1 == 2);
-}
 
 //TEST(testTwo, ExampleTest){
 //    int result = add_numbers(1,2);
