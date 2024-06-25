@@ -6,6 +6,10 @@
 
 #define MEMORY_SIZE 65536 // 64KiB
 
+#ifdef _cpluscplus
+extern "C" {
+#endif
+
 typedef struct Flags {
   unsigned int S : 1;
   unsigned int Z : 1;
@@ -31,5 +35,9 @@ typedef struct CPU {
   uint16_t PC;
   uint8_t memory[MEMORY_SIZE];
 } CPU;
+
+#ifdef _cplusplus
+}
+#endif 
 
 #endif

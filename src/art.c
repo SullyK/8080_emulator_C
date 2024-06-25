@@ -1,7 +1,7 @@
-#include <art.h>
-#include <cpu.h>
+#include "art.h"
+#include "cpu.h"
 
-int overflow_detected(uint8_t a,
+uint8_t overflow_detected(uint8_t a,
                       uint8_t b) { // This checks for uint8_t overflows
   if (a > 0 && b > (UINT_8_MAX_VALUE - a)) { // TODO: Write tests for this func
     // printf("OVERFLOW");
