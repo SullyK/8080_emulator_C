@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 #include <iostream>
 #include "../src/art.h"
-#include "../src/cpu.h"
 
 
 TEST(OverflowTest, ExampleTest){
