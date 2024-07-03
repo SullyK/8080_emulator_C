@@ -5,5 +5,8 @@
 int main(){
 
     printf("Hello World\n");
+    CPU cpu; 
+    cpu.SP = 20;
+    
 
 }

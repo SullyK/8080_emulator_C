@@ -28,7 +28,6 @@ typedef struct Registers {
 } Registers;
 
 typedef struct CPU {
-
   Flags flags;
   Registers registers;
   uint16_t SP;
