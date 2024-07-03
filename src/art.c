@@ -1,8 +1,11 @@
 #include "art.h"
 #include "cpu.h"
 
-uint8_t overflow_detected(uint8_t a,
-                      uint8_t b) { // This checks for uint8_t overflows
+uint8_t overflow_detected(uint8_t a, 
+                      uint8_t b) { // TODO: This function I don't think statifies the
+				   // requirement for the carry flag and therefore needs to
+				   // implement undeflow too I believe. Fix implementation
+				   // before making tests
   if (a > 0 && b > (UINT_8_MAX_VALUE - a)) { // TODO: Write tests for this func
     // printf("OVERFLOW");
     return 1;
@@ -39,6 +42,14 @@ uint8_t set_aux_carry(uint8_t number) { // naive implementation
   return 0;
 }
 
+uint8_t zero(uint8_t number){
+    if(number){
+	return 0;
+    }
+    return 1;
+
+}
+
 int add_register(CPU *cpu, uint8_t reg_value) {
 
   uint8_t result = overflow_detected(cpu->registers.A,reg_value);
@@ -59,11 +70,8 @@ int add_register(CPU *cpu, uint8_t reg_value) {
   }
 
   // zero
-  if (result) {
-    cpu->flags.Z = 0;
-  } else {
-    cpu->flags.Z = 1;
-  }
+  uint8_t zero_return = zero(result);
+  cpu->flags.Z = zero_return;
 
   // parity
   if (check_parity(result)) {

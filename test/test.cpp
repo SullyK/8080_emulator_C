@@ -218,6 +218,25 @@ uint8_t result = set_aux_carry(number);
 ASSERT_EQ(result, 1);
 }                          
 
+//zero tests
+TEST(ZeroTest_1, ExampleTest){
+    uint8_t number = 0;
+    uint8_t result = zero(number);
+    ASSERT_EQ(result,1);
+}
+
+TEST(ZeroTest_2, ExampleTest){
+    uint8_t number = 10;
+    uint8_t result = zero(number);
+    ASSERT_EQ(result,0);
+}
+                     
+TEST(ZeroTest_3, ExampleTest){
+    uint8_t number = 1;
+    uint8_t result = zero(number);
+    ASSERT_EQ(result,0);
+}                     
+
 int main(int argc, char **argv){
     ::testing::InitGoogleTest(&argc,argv);
     return RUN_ALL_TESTS();
