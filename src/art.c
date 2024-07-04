@@ -1,16 +1,17 @@
 #include "art.h"
 #include "cpu.h"
 
-uint8_t overflow_detected(uint8_t a, 
-                      uint8_t b) { // TODO: This function I don't think statifies the
-				   // requirement for the carry flag and therefore needs to
-				   // implement undeflow too I believe. Fix implementation
-				   // before making tests
-  if (a > 0 && b > (UINT_8_MAX_VALUE - a)) { // TODO: Write tests for this func
-    // printf("OVERFLOW");
+uint8_t unsigned_addition_carry_check(uint8_t a, uint8_t b) {
+  if (a > 0 && b > (UINT_8_MAX_VALUE - a)) { // overflow set
     return 1;
   }
+  return 0;
+}
 
+uint8_t unsigned_subtract_carry_check(uint8_t a, uint8_t b) {
+  if (a < b) { // underflow set
+    return 1;
+  }
   return 0;
 }
 
@@ -42,17 +43,16 @@ uint8_t set_aux_carry(uint8_t number) { // naive implementation
   return 0;
 }
 
-uint8_t zero(uint8_t number){
-    if(number){
-	return 0;
-    }
-    return 1;
-
+uint8_t zero(uint8_t number) {
+  if (number) {
+    return 0;
+  }
+  return 1;
 }
 
 int add_register(CPU *cpu, uint8_t reg_value) {
 
-  uint8_t result = overflow_detected(cpu->registers.A,reg_value);
+  uint8_t result = unsigned_addition_carry_check(cpu->registers.A, reg_value);
   cpu->registers.A = result;
   // carry
   if (result) {

@@ -7,73 +7,106 @@
 TEST(OverflowTest_1, ExampleTest){
     uint8_t a = 23;
     uint8_t b = 33;
-    uint8_t result = overflow_detected(a,b);
+    uint8_t result = unsigned_addition_carry_check(a,b);
     ASSERT_EQ(result, 0);
 }
 
 TEST(OverflowTest_2, ExampleTest){
     uint8_t a = 255;
     uint8_t b = 1;
-    uint8_t result = overflow_detected(a,b);
+    uint8_t result = unsigned_addition_carry_check(a,b);
     ASSERT_EQ(result, 1);
 }
 
 TEST(OverflowTest_3, ExampleTest){
     uint8_t a = 255;
     uint8_t b = 0;
-    uint8_t result = overflow_detected(a,b);
+    uint8_t result = unsigned_addition_carry_check(a,b);
     ASSERT_EQ(result, 0);
 }
 
 TEST(OverflowTest_4, ExampleTest){
     uint8_t a = 127;
     uint8_t b = 128;
-    uint8_t result = overflow_detected(a,b);
+    uint8_t result = unsigned_addition_carry_check(a,b);
     ASSERT_EQ(result, 0);
 }
 
 TEST(OverflowTest_5, ExampleTest){
     uint8_t a = 128;
     uint8_t b = 127;
-    uint8_t result = overflow_detected(a,b);
+    uint8_t result = unsigned_addition_carry_check(a,b);
     ASSERT_EQ(result, 0);
 }
 
 TEST(OverflowTest_6, ExampleTest){
     uint8_t a = 128;
     uint8_t b = 128;
-    uint8_t result = overflow_detected(a,b);
+    uint8_t result = unsigned_addition_carry_check(a,b);
     ASSERT_EQ(result, 1);
 }
  
 TEST(OverflowTest_7, ExampleTest){
 uint8_t a = 2;
 uint8_t b = 254;
-uint8_t result = overflow_detected(a,b);
+uint8_t result = unsigned_addition_carry_check(a,b);
 ASSERT_EQ(result, 1);
 }
 
 TEST(OverflowTest_8, ExampleTest){
     uint8_t a = 0;
     uint8_t b = 0;
-    uint8_t result = overflow_detected(a,b);
+    uint8_t result = unsigned_addition_carry_check(a,b);
     ASSERT_EQ(result, 0);
 }
 
 TEST(OverflowTest_9, ExampleTest){
     uint8_t a = 255;
     uint8_t b = 0;
-    uint8_t result = overflow_detected(a,b);
+    uint8_t result = unsigned_addition_carry_check(a,b);
     ASSERT_EQ(result, 0);
 }
 
 TEST(OverflowTest_10, ExampleTest){
     uint8_t a = 250;
     uint8_t b = 5;
-    uint8_t result = overflow_detected(a,b);
+    uint8_t result = unsigned_addition_carry_check(a,b);
     ASSERT_EQ(result, 0);
 }
 
+//underflow test
+TEST(UnderflowTest_1, ExampleTest){
+    uint8_t a = 1;
+    uint8_t b = 2;
+    uint8_t result = unsigned_subtract_carry_check(a,b);
+    ASSERT_EQ(result, 1);
+}
+
+ TEST(UnderflowTest_2, ExampleTest){
+    uint8_t a = 2;
+    uint8_t b = 1;
+    uint8_t result = unsigned_subtract_carry_check(a,b);
+    ASSERT_EQ(result, 0);
+}
+ 
+ TEST(UnderflowTest_3, ExampleTest){
+    uint8_t a = 255;
+    uint8_t b = 1;
+    uint8_t result = unsigned_subtract_carry_check(a,b);
+    ASSERT_EQ(result, 0);
+}
+ 
+ 
+ TEST(UnderflowTest_4, ExampleTest){
+    uint8_t a = 1;
+    uint8_t b = 255;
+    uint8_t result = unsigned_subtract_carry_check(a,b);
+    ASSERT_EQ(result, 1);
+}
+                   
+
+ 
+ 
 //signed tests
 TEST(CheckSignedTest_1, ExampleTest){
     uint8_t number = 0b10000000;
