@@ -50,42 +50,6 @@ uint8_t zero(uint8_t number) {
   return 1;
 }
 
-int add_register(CPU *cpu, uint8_t reg_value) {
-
-  uint8_t result = unsigned_addition_carry_check(cpu->registers.A, reg_value);
-  cpu->registers.A = result;
-  // carry
-  if (result) {
-    cpu->flags.C = 1;
-  } else {
-    cpu->flags.C = 0;
-  }
-
-  // signed
-  uint8_t sign = check_signed_bit(result);
-  if (sign) {
-    cpu->flags.S = 1;
-  } else {
-    cpu->flags.S = 0;
-  }
-
-  // zero
-  uint8_t zero_return = zero(result);
-  cpu->flags.Z = zero_return;
-
-  // parity
-  if (check_parity(result)) {
-    cpu->flags.P = 1;
-  } else {
-    cpu->flags.P = 0;
-  }
-
-  // aux carry
-  if (set_aux_carry(result)) {
-    cpu->flags.AC = 1;
-  } else {
-    cpu->flags.AC = 0;
-  }
-
-  return 0;
-}
+//void set_all_flags_add(uint8_t a, uint8_t b, Flags *flags){}
+//TODO: maybe a composite function which I can use instead of manually doing each one,
+//but I will come back to it
