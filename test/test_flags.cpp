@@ -180,6 +180,13 @@ uint8_t number = 0b011111100;
 uint8_t result = check_parity(number);
 ASSERT_EQ(result, 1);
 }
+
+TEST(ParityTest_9, ExampleTest){
+uint8_t number = 0b000000000;
+uint8_t result = check_parity(number);
+ASSERT_EQ(result,1);
+}
+ 
  
 // aux carry tests
 TEST(AuxCarryTest_1, ExampleTest){
