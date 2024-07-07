@@ -2,7 +2,21 @@
 #include "cpu.h"
 
 uint8_t unsigned_addition_carry_check(uint8_t a, uint8_t b) {
-  if (a > 0 && b > (UINT_8_MAX_VALUE - a)) { // overflow set
+  if (b > (UINT_8_MAX_VALUE - a)) { // overflow set
+    return 1;
+  }
+  return 0;
+}
+
+uint8_t unsigned_addition_carry_check_with_carry(uint8_t a, uint8_t b,
+                                                 uint8_t c) { // TODO: 1)
+                                                              // rename
+                                                              // 2) int8_t
+                                                              // or bool?
+                                                              // which is
+                                                              // more
+                                                              // effeicent
+  if ((b+c) > (UINT_8_MAX_VALUE - a)) { // overflow set
     return 1;
   }
   return 0;
@@ -50,6 +64,6 @@ uint8_t zero(uint8_t number) {
   return 1;
 }
 
-//void set_all_flags_add(uint8_t a, uint8_t b, Flags *flags){}
-//TODO: maybe a composite function which I can use instead of manually doing each one,
-//but I will come back to it
+// void set_all_flags_add(uint8_t a, uint8_t b, Flags *flags){}
+// TODO: maybe a composite function which I can use instead of manually doing
+// each one, but I will come back to it

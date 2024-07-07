@@ -51,7 +51,7 @@ TEST(add_register_3, ExampleTest) {
   ASSERT_EQ(cpu.flags.AC, 1);
 }
 
-//add memory function tests
+// add memory function tests
 TEST(add_memory_1, ExampleTest) {
   CPU cpu = {0};
   cpu.registers.A = 10;
@@ -121,6 +121,213 @@ TEST(add_memory_5, ExampleTest) {
   ASSERT_EQ(cpu.flags.P, 0);
   ASSERT_EQ(cpu.flags.AC, 0);
 }
-//think of other cases for these functions
+// think of other cases for the above func
+
+// add_register_carry func tests
+TEST(add_register_carry_1, ExampleTest) {
+  CPU cpu = {0};
+  cpu.registers.A = 0;
+  uint8_t reg_value = 100;
+  cpu.flags.C = 1;
+
+  add_register_carry(&cpu, reg_value);
+  ASSERT_EQ(cpu.registers.A, 101);
+  ASSERT_EQ(cpu.flags.C, 0);
+  ASSERT_EQ(cpu.flags.S, 0);
+  ASSERT_EQ(cpu.flags.Z, 0);
+  ASSERT_EQ(cpu.flags.P, 1);
+  ASSERT_EQ(cpu.flags.AC, 0);
+}
+
+TEST(add_register_carry_2, ExampleTest) {
+  CPU cpu = {0};
+  cpu.registers.A = 244;
+  uint8_t reg_value = 10;
+  cpu.flags.C = 1;
+
+  add_register_carry(&cpu, reg_value);
+  ASSERT_EQ(cpu.registers.A, 255);
+  ASSERT_EQ(cpu.flags.C, 0);
+  ASSERT_EQ(cpu.flags.S, 1);
+  ASSERT_EQ(cpu.flags.Z, 0);
+  ASSERT_EQ(cpu.flags.P, 1);
+  ASSERT_EQ(cpu.flags.AC, 1);
+}
+
+TEST(add_register_carry_3, ExampleTest) {
+  CPU cpu = {0};
+  cpu.registers.A = 0;
+  uint8_t reg_value = 255;
+  cpu.flags.C = 1;
+  add_register_carry(&cpu, reg_value);
+  ASSERT_EQ(cpu.registers.A, 0);
+  ASSERT_EQ(cpu.flags.C, 1);
+  ASSERT_EQ(cpu.flags.S, 0);
+  ASSERT_EQ(cpu.flags.Z, 1);
+  ASSERT_EQ(cpu.flags.P, 1);
+  ASSERT_EQ(cpu.flags.AC, 0);
+}
+
+TEST(add_register_carry_4, ExampleTest) {
+  CPU cpu = {0};
+  cpu.registers.A = 255;
+  uint8_t reg_value = 0;
+  cpu.flags.C = 1;
+  add_register_carry(&cpu, reg_value);
+  ASSERT_EQ(cpu.registers.A, 0);
+  ASSERT_EQ(cpu.flags.C, 1);
+  ASSERT_EQ(cpu.flags.S, 0);
+  ASSERT_EQ(cpu.flags.Z, 1);
+  ASSERT_EQ(cpu.flags.P, 1);
+  ASSERT_EQ(cpu.flags.AC, 0);
+}
+
+TEST(add_register_carry_5, ExampleTest) {
+  CPU cpu = {0};
+  cpu.registers.A = 255;
+  uint8_t reg_value = 0;
+  cpu.flags.C = 0;
+  add_register_carry(&cpu, reg_value);
+  ASSERT_EQ(cpu.registers.A, 255);
+  ASSERT_EQ(cpu.flags.C, 0);
+  ASSERT_EQ(cpu.flags.S, 1);
+  ASSERT_EQ(cpu.flags.Z, 0);
+  ASSERT_EQ(cpu.flags.P, 1);
+  ASSERT_EQ(cpu.flags.AC, 1);
+}
+
+// add_memory_carry tests
+TEST(add_memory_carry_1, ExampleTest) {
+  CPU cpu = {0};
+  cpu.registers.A = 0;
+  cpu.flags.C = 1;
+  uint16_t HL = 2000;
+  cpu.memory[HL] = 20;
+  add_memory_carry(&cpu, HL);
+  ASSERT_EQ(cpu.registers.A, 21);
+  ASSERT_EQ(cpu.flags.C, 0);
+  ASSERT_EQ(cpu.flags.S, 0);
+  ASSERT_EQ(cpu.flags.Z, 0);
+  ASSERT_EQ(cpu.flags.P, 0);
+  ASSERT_EQ(cpu.flags.AC, 0);
+}
+
+TEST(add_memory_carry_2, ExampleTest) {
+  CPU cpu = {0};
+  cpu.registers.A = 150;
+  cpu.flags.C = 0;
+  uint16_t HL = 2000;
+  cpu.memory[HL] = 20;
+  add_memory_carry(&cpu, HL);
+  ASSERT_EQ(cpu.registers.A, 170);
+  ASSERT_EQ(cpu.flags.C, 0);
+  ASSERT_EQ(cpu.flags.S, 1);
+  ASSERT_EQ(cpu.flags.Z, 0);
+  ASSERT_EQ(cpu.flags.P, 1);
+  ASSERT_EQ(cpu.flags.AC, 1);
+}
+
+TEST(add_memory_carry_3, ExampleTest) {
+  CPU cpu = {0};
+  cpu.registers.A = 255;
+  cpu.flags.C = 1;
+  uint16_t HL = 65535;
+  cpu.memory[HL] = 255;
+  add_memory_carry(&cpu, HL);
+  ASSERT_EQ(cpu.registers.A, 255);
+  ASSERT_EQ(cpu.flags.C, 1);
+  ASSERT_EQ(cpu.flags.S, 1);
+  ASSERT_EQ(cpu.flags.Z, 0);
+  ASSERT_EQ(cpu.flags.P, 1);
+  ASSERT_EQ(cpu.flags.AC, 1);
+}
+
+// add_data_carry tests
+
+TEST(add_data_carry_1, ExampleTest) {
+  CPU cpu = {0};
+  cpu.registers.A = 99;
+  cpu.flags.C = 1;
+  uint8_t byte_two = 10;
+  add_data_carry(&cpu, byte_two);
+  ASSERT_EQ(cpu.registers.A, 110);
+  ASSERT_EQ(cpu.flags.C, 0);
+  ASSERT_EQ(cpu.flags.S, 0);
+  ASSERT_EQ(cpu.flags.Z, 0);
+  ASSERT_EQ(cpu.flags.P, 0);
+  ASSERT_EQ(cpu.flags.AC, 1);
+}
+
+TEST(add_data_carry_2, ExampleTest) {
+  CPU cpu = {0};
+  cpu.registers.A = 255;
+  cpu.flags.C = 1;
+  uint8_t byte_two = 40;
+  add_data_carry(&cpu, byte_two);
+  ASSERT_EQ(cpu.registers.A, 40);
+  ASSERT_EQ(cpu.flags.C, 1);
+  ASSERT_EQ(cpu.flags.S, 0);
+  ASSERT_EQ(cpu.flags.Z, 0);
+  ASSERT_EQ(cpu.flags.P, 1);
+  ASSERT_EQ(cpu.flags.AC, 0);
+}
+
+TEST(add_data_carry_3, ExampleTest) {
+  CPU cpu = {0};
+  cpu.registers.A = 0;
+  cpu.flags.C = 0;
+  uint8_t byte_two = 0;
+  add_data_carry(&cpu, byte_two);
+  ASSERT_EQ(cpu.registers.A, 0);
+  ASSERT_EQ(cpu.flags.C, 0);
+  ASSERT_EQ(cpu.flags.S, 0);
+  ASSERT_EQ(cpu.flags.Z, 1);
+  ASSERT_EQ(cpu.flags.P, 1);
+  ASSERT_EQ(cpu.flags.AC, 0);
+}
+
+TEST(add_data_carry_4, ExampleTest) {
+  CPU cpu = {0};
+  cpu.registers.A = 100;
+  cpu.flags.C = 1;
+  uint8_t byte_two = 200;
+  add_data_carry(&cpu, byte_two);
+  ASSERT_EQ(cpu.registers.A, 45);
+  ASSERT_EQ(cpu.flags.C, 1);
+  ASSERT_EQ(cpu.flags.S, 0);
+  ASSERT_EQ(cpu.flags.Z, 0);
+  ASSERT_EQ(cpu.flags.P, 1);
+  ASSERT_EQ(cpu.flags.AC, 1);
+}
+
+ 
+TEST(add_data_carry_5, ExampleTest) {
+  CPU cpu = {0};
+  cpu.registers.A = 100;
+  cpu.flags.C = 1;
+  uint8_t byte_two = 200;
+  add_data_carry(&cpu, byte_two);
+  ASSERT_EQ(cpu.registers.A, 45);
+  ASSERT_EQ(cpu.flags.C, 1);
+  ASSERT_EQ(cpu.flags.S, 0);
+  ASSERT_EQ(cpu.flags.Z, 0);
+  ASSERT_EQ(cpu.flags.P, 1);
+  ASSERT_EQ(cpu.flags.AC, 1);
+}                                                 
+                                                  
+ 
+TEST(add_data_carry_6, ExampleTest) {
+  CPU cpu = {0};
+  cpu.registers.A = 100;
+  cpu.flags.C = 1;
+  uint8_t byte_two = 80;
+  add_data_carry(&cpu, byte_two);
+  ASSERT_EQ(cpu.registers.A, 181);
+  ASSERT_EQ(cpu.flags.C, 0);
+  ASSERT_EQ(cpu.flags.S, 1);
+  ASSERT_EQ(cpu.flags.Z, 0);
+  ASSERT_EQ(cpu.flags.P, 0);
+  ASSERT_EQ(cpu.flags.AC, 0);
+} 
 
 // void add_register(CPU *cpu, uint8_t reg_value);
