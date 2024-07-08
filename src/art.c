@@ -29,6 +29,13 @@ uint8_t unsigned_subtract_carry_check(uint8_t a, uint8_t b) {
   return 0;
 }
 
+uint8_t unsigned_subtract_carry_check_with_carry(uint8_t a, uint8_t b, uint8_t carry) {
+  if (a < b - c) { // underflow set with carry - test this
+    return 1;
+  }
+  return 0;
+}
+ 
 uint8_t check_signed_bit(uint8_t number) {
   if ((number >> 7)) { // TODO: I don't think I need == 1, should be 0 or 1
     return 1;
