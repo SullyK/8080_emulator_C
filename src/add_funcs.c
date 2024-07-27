@@ -1,5 +1,4 @@
 #include "add_funcs.h"
-#include "helpers.h"
 // TODO: NAME EACH FUNC TO CORRESPENDING ENTRY ON DATABOOK EXAMPLE
 // DCR M FOR decrement_memory
 
@@ -372,7 +371,7 @@ void subtract_data(CPU *cpu, uint8_t byte_two) {
 void subtract_memory(CPU *cpu, uint16_t HL) {
 
   uint8_t result = cpu->registers.A - cpu->memory[HL];
-  uint8_t carry = unsigned_subtract_carry_check(cpu->registers.A, byte_two);
+  uint8_t carry = unsigned_subtract_carry_check(cpu->registers.A,cpu->memory[HL]);
   cpu->registers.A = result;
   // carry
   if (carry == 1) {
@@ -410,50 +409,10 @@ void subtract_memory(CPU *cpu, uint16_t HL) {
   return;
 }
 
-void subtract_memory(CPU *cpu, uint16_t HL) {
-
-  uint8_t result = cpu->registers.A - cpu->memory[HL];
-  uint8_t carry = unsigned_subtract_carry_check(cpu->registers.A, byte_two);
-  cpu->registers.A = result;
-  // carry
-  if (carry == 1) {
-    cpu->flags.C = 1;
-  } else {
-    cpu->flags.C = 0;
-  }
-
-  // signed
-  uint8_t sign = check_signed_bit(result);
-  if (sign) {
-    cpu->flags.S = 1;
-  } else {
-    cpu->flags.S = 0;
-  }
-
-  // zero
-  uint8_t zero_return = zero(result);
-  cpu->flags.Z = zero_return;
-
-  // parity
-  if (check_parity(result)) {
-    cpu->flags.P = 1;
-  } else {
-    cpu->flags.P = 0;
-  }
-
-  // aux carry
-  if (set_aux_carry(result)) {
-    cpu->flags.AC = 1;
-  } else {
-    cpu->flags.AC = 0;
-  }
-  return;
-}
 
 void subtract_register_carry(CPU *cpu, uint8_t register_value) {
-  uint8_t result = cpu->registers.A - register_value - cpu.flags.C;
-  uint8_t carry = subtract_register_carry_with_carry(
-      cpu->registers.A - register_value - cpu.flags.C);
+  uint8_t result = cpu->registers.A - register_value - cpu->flags.C;
+  uint8_t carry = unsigned_subtract_carry_check_with_carry(cpu->registers.A, register_value, cpu->flags.C);
 
   cpu->registers.A = result;
   // carry
@@ -492,9 +451,8 @@ void subtract_register_carry(CPU *cpu, uint8_t register_value) {
 }
 
 void subtract_memory_carry(CPU *cpu, uint16_t HL) {
-  uint8_t result = cpu->registers.A - cpu->memory[HL] - cpu.flags.C;
-  uint8_t carry = subtract_register_carry_with_carry(
-      cpu->registers.A - cpu->memory[HL] - cpu.flags.C);
+  uint8_t result = cpu->registers.A - cpu->memory[HL] - cpu->flags.C;
+  uint8_t carry = unsigned_subtract_carry_check_with_carry(cpu->registers.A, cpu->memory[HL], cpu->flags.C);
 
   cpu->registers.A = result;
   // carry
@@ -535,9 +493,8 @@ void subtract_memory_carry(CPU *cpu, uint16_t HL) {
 void subtract_data_carry(
     CPU *cpu, uint8_t byte_two) { // TODO: helper func to determine 2nd byte
                                   // from HL register automatically
-  uint8_t result = cpu->registers.A - byte_two - cpu.flags.C;
-  uint8_t carry = subtract_register_carry_with_carry(cpu->registers.A -
-                                                     byte_two - cpu.flags.C);
+  uint8_t result = cpu->registers.A - byte_two - cpu->flags.C;
+  uint8_t carry = unsigned_subtract_carry_check_with_carry(cpu->registers.A, byte_two, cpu->flags.C);
 
   cpu->registers.A = result;
   // carry
@@ -701,17 +658,19 @@ void decrement_memory(CPU *cpu, uint16_t HL) {
   return;
 }
 
-void increment_register_pair(CPU *cpu, uint8_t *high,
+//TODO: it looks like this function just takes 2 values, we will need to provide the CPU->reg when
+//calling. IDK if this is the best way to do deal with it but for now, we will just continue, 
+//tomorrow's problem for tomorrow
+void increment_register_pair(uint8_t *high, 
                              uint8_t *low) { // TODO: correct order?
                                              // this shoudl take 2
                                              // register pairs which we
                                              // will edit
-  uint16_t combined_reg = combine_registers(*high, *low);
+  uint16_t combined_reg = combine_registers(*high, *low); //combine
   combined_reg = combined_reg + 1;
-  //TODO: Helper splitting function
-  *high = combined >> 8;
-  *low = combined & 0xFF;
-
+  SplitBytes sb = split_bytes(combined_reg); //split
+  *high = sb.high;
+  *low = sb.low;
   return;
   //TODO: resume here:
   //1) check the helpers.h file is correct

@@ -10,10 +10,10 @@ MAIN_TARGET = main
 TEST_TARGET = test_runner
 
 
-MAIN_SRCS = src/art.c src/cpu.c src/main.c  src/add_funcs.c
+MAIN_SRCS = src/art.c src/cpu.c src/main.c  src/add_funcs.c src/helpers.c
 MAIN_OBJS = $(MAIN_SRCS:.c=.o)
 
-HELPERS_MAIN_SRCS = src/art.c src/cpu.c src/add_funcs.c
+HELPERS_MAIN_SRCS = src/art.c src/cpu.c src/add_funcs.c src/helpers.c
 HELPERS_OBJS = $(HELPERS_MAIN_SRCS:.c=.o) 
 TEST_SRCS = test/test_flags.cpp test/test_interg_arth.cpp
 TEST_OBJS = $(TEST_SRCS:.cpp=.o) $(HELPERS_OBJS)

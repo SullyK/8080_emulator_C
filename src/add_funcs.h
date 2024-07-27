@@ -2,8 +2,9 @@
 #define ADD_FUNCS
 #include "art.h"
 #include "cpu.h"
+#include "helpers.h"
 #include <stdint.h>
-
+                              
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -20,6 +21,12 @@ void subtract_data(CPU *cpu, uint8_t byte_two);
 void subtract_data_carry(CPU *cpu, uint8_t byte_two);
 void subtract_memory(CPU *cpu, uint16_t HL);
 void subtract_memory_carry(CPU *cpu, uint16_t HL);
+void increment_register(CPU *cpu, uint8_t *reg);
+void increment_memory(CPU *cpu, uint16_t HL);
+void decrement_register(CPU *cpu, uint8_t *reg);
+void decrement_memory(CPU *cpu, uint16_t HL);
+void increment_register_pair(uint8_t *high,uint8_t *low);
+
 #ifdef __cplusplus
 }
 #endif
