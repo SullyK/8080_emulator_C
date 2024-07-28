@@ -9,6 +9,8 @@ extern "C" {
 #define UINT_8_MAX_VALUE 255
 #define UINT_8_MIN_VALUE 0
 
+#define UINT_16_MAX_VALUE 65535
+uint8_t unsigned_addition_carry_check_16_bit(uint16_t a, uint16_t b);
 uint8_t unsigned_addition_carry_check(uint8_t a, uint8_t b);
 uint8_t unsigned_addition_carry_check_with_carry(uint8_t a, uint8_t b,
                                                  uint8_t c);

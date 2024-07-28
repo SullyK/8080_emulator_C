@@ -661,6 +661,9 @@ void decrement_memory(CPU *cpu, uint16_t HL) {
 //TODO: it looks like this function just takes 2 values, we will need to provide the CPU->reg when
 //calling. IDK if this is the best way to do deal with it but for now, we will just continue, 
 //tomorrow's problem for tomorrow
+//
+//thought's a little later: these are basically just 2 registers, so cpu->registers.B etc
+//so shoudlnt make too much diff
 void increment_register_pair(uint8_t *high, 
                              uint8_t *low) { // TODO: correct order?
                                              // this shoudl take 2
@@ -673,10 +676,50 @@ void increment_register_pair(uint8_t *high,
   *low = sb.low;
   return;
   //TODO: resume here:
-  //1) check the helpers.h file is correct
-  //2) check the helpers being properly imported
   //3) check this and other .h files proper
   //4) finish the final few functions
   //5) test them all
-  
 }
+
+
+void decrement_register_pair(uint8_t *high, uint8_t *low){
+    uint16_t combined_reg = combine_registers(*high, *low);
+    combined_reg = combined_reg - 1;
+    SplitBytes sb = split_bytes(combined_reg);
+    *high = sb.high;
+    *low = sb.low;
+    return;
+}
+
+void add_reg_pair_to_HL(CPU *cpu, uint8_t *high, uint8_t *low){
+    uint16_t combined_reg = combine_registers(*high, *low);
+    uint16_t combined_hl = combine_registers(cpu->registers.H, cpu->registers.L);
+    uint16_t added_hl = combined_reg + combined_hl;
+    SplitBytes sb = split_bytes(added_hl);
+    cpu->registers.H = sb.high;
+    cpu->registers.L = sb.low;
+    uint8_t carry_check = unsigned_addition_carry_check_16_bit(combined_hl , combined_reg);
+    if(carry_check == 1){
+	cpu->flags.C = 1;
+    }else{
+	cpu->flags.C = 0;
+    }
+    return;
+}
+
+void decimal_adjust_accumulator(CPU *cpu){ //TODO: resume here and do the flags for this n then test 
+					   //this and all other logical addiiton functions
+    if((cpu->registers.A & 0xF) > 9 || cpu->flags.AC == 1){
+	cpu->registers.A += 6;
+    }
+
+    if((cpu->registers.A >> 4) > 9 || cpu->flags.C == 1){
+	uint8_t high_bits = cpu->registers.A >> 4;
+	uint8_t low_bits = cpu->registers.A & 0xF;
+	high_bits += 4;
+	cpu->registers.A = (high_bits << 4) | low_bits;
+	
+    }
+
+}
+	
