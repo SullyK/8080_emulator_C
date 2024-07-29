@@ -711,13 +711,21 @@ void decimal_adjust_accumulator(CPU *cpu){ //TODO: resume here and do the flags 
 					   //this and all other logical addiiton functions
     if((cpu->registers.A & 0xF) > 9 || cpu->flags.AC == 1){
 	cpu->registers.A += 6;
+	cpu->flags.AC = 1;
+    }else{ // sort this crap show out.
+	cpu->flags.AC = 0;
     }
 
     if((cpu->registers.A >> 4) > 9 || cpu->flags.C == 1){
 	uint8_t high_bits = cpu->registers.A >> 4;
 	uint8_t low_bits = cpu->registers.A & 0xF;
-	high_bits += 4;
+	high_bits += 6;
 	cpu->registers.A = (high_bits << 4) | low_bits;
+	cpu->flags.C = 1;
+	}
+    else{
+	cpu->flags.C = 0;
+    }
 	
     }
 

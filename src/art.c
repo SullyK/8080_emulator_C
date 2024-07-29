@@ -1,6 +1,13 @@
 #include "art.h"
 #include "cpu.h"
 
+uint8_t unsigned_addition_carry_check_4_bit(uint4_t a, uint16_t b) {
+  if (b > (UINT_16_MAX_VALUE - a)) { // overflow set
+    return 1;
+  }
+  return 0;
+}
+ 
 
 uint8_t unsigned_addition_carry_check_16_bit(uint16_t a, uint16_t b) {
   if (b > (UINT_16_MAX_VALUE - a)) { // overflow set
