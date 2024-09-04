@@ -1,8 +1,11 @@
 #include "art.h"
 #include "cpu.h"
 
-uint8_t unsigned_addition_carry_check_4_bit(uint4_t a, uint16_t b) {
-  if (b > (UINT_16_MAX_VALUE - a)) { // overflow set
+
+// @@@ TODO: i preferred 0b1111 but it's not really c standard, and I didn't want random 15
+// I might need to change this to be more clear in the future
+uint8_t unsigned_addition_carry_check_4_bit(uint8_t a, uint8_t b) {
+  if (((b & UINT_4_MAX_VALUE) > (UINT_4_MAX_VALUE - (a & UINT_4_MAX_VALUE)))) { // overflow set
     return 1;
   }
   return 0;
@@ -45,7 +48,7 @@ uint8_t unsigned_subtract_carry_check(uint8_t a, uint8_t b) {
 }
 
 uint8_t unsigned_subtract_carry_check_with_carry(uint8_t a, uint8_t b, uint8_t carry) {
-  if (a < b - carry) { // underflow set with carry - test this
+  if (a < (b - carry)) { // underflow set with carry - test this
     return 1;
   }
   return 0;

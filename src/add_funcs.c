@@ -248,7 +248,8 @@ void add_data_carry(CPU *cpu, uint8_t byte_two) {
   // TODO: result + carry = done similar thing twice, make more efficent
   uint8_t result = cpu->registers.A + byte_two + cpu->flags.C;
   uint8_t carry = unsigned_addition_carry_check_with_carry(
-      cpu->registers.A, byte_two, (uint8_t)cpu->flags.C);
+      cpu->registers.A, byte_two, (uint8_t)cpu->flags.C); 
+  //TODO: @@@ I think I need to do this as uint8_t cast because it will do addition with uint_8
 
   cpu->registers.A = result;
   // carry
@@ -727,7 +728,6 @@ void decimal_adjust_accumulator(CPU *cpu){ //TODO: resume here and do the flags 
 	cpu->flags.C = 0;
     }
 	
-    }
 
 }
 	

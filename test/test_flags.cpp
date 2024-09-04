@@ -2,6 +2,174 @@
 #include <iostream>
 #include "../src/art.h"
 
+//@@@ TODO: change where I place these below tests, just need to check they work
+
+ 
+//underflow test with carry 
+TEST(UnderflowTest_with_carry_1, ExampleTest){
+    uint8_t a = 1;
+    uint8_t b = 2;
+    uint8_t c = 0;
+    uint8_t result = unsigned_subtract_carry_check_with_carry(a,b,c);
+    ASSERT_EQ(result, 1); //underflow occurs
+}
+ 
+TEST(UnderflowTest_with_carry_2, ExampleTest){
+    uint8_t a = 1;
+    uint8_t b = 0;
+    uint8_t c = 1;
+    uint8_t result = unsigned_subtract_carry_check_with_carry(a,b,c);
+    ASSERT_EQ(result, 0);
+}
+
+TEST(UnderflowTest_with_carry_3, ExampleTest){
+    uint8_t a = 1;
+    uint8_t b = 10;
+    uint8_t c = 1;
+    uint8_t result = unsigned_subtract_carry_check_with_carry(a,b,c);
+    ASSERT_EQ(result, 1); //underflow occurs
+}
+ 
+TEST(UnderflowTest_with_carry_4, ExampleTest){
+    uint8_t a = 1;
+    uint8_t b = 2;
+    uint8_t c = 1;
+    uint8_t result = unsigned_subtract_carry_check_with_carry(a,b,c);
+    ASSERT_EQ(result, 0);
+}
+
+TEST(UnderflowTest_with_carry_5, ExampleTest){
+    uint8_t a = 4;
+    uint8_t b = 2;
+    uint8_t c = 1;
+    uint8_t result = unsigned_subtract_carry_check_with_carry(a,b,c);
+    ASSERT_EQ(result, 0);
+}
+ 
+ 
+
+
+//@@@ TODO: C will always be 1 or 0 in these functions since its 1 bit int
+TEST(overflow_addtion_carry_check_with_carry_1, ExampleTest){
+    uint8_t a = 254;
+    uint8_t b = 1;
+    uint8_t c = 1;
+    uint8_t result = unsigned_addition_carry_check_with_carry(a,b,c);
+    ASSERT_EQ(result,1);
+}
+
+TEST(overflow_addtion_carry_check_with_carry_2, ExampleTest){
+    uint8_t a = 254;
+    uint8_t b = 1;
+    uint8_t c = 0;
+    uint8_t result = unsigned_addition_carry_check_with_carry(a,b,c);
+    ASSERT_EQ(result,0);
+}
+
+TEST(overflow_addtion_carry_check_with_carry_3, ExampleTest){
+    uint8_t a = 4;
+    uint8_t b = 250;
+    uint8_t c = 1;
+    uint8_t result = unsigned_addition_carry_check_with_carry(a,b,c);
+    ASSERT_EQ(result,0);
+}
+
+TEST(overflow_addtion_carry_check_with_carry_4, ExampleTest){
+    uint8_t a = 3;
+    uint8_t b = 250;
+    uint8_t c = 1;
+    uint8_t result = unsigned_addition_carry_check_with_carry(a,b,c);
+    ASSERT_EQ(result,0);
+}
+
+//@@@ TODO: Is this test correct
+TEST(overflow_addtion_carry_check_with_carry_5, ExampleTest){
+    uint8_t a = 255;
+    uint8_t b = 255;
+    uint8_t c = 1;
+    uint8_t result = unsigned_addition_carry_check_with_carry(a,b,c);
+    ASSERT_EQ(result,1);
+}
+ 
+ 
+ 
+
+TEST(overflow_4bit_1, ExampleTest){
+    uint8_t a = 10;
+    uint8_t b = 6;
+    uint8_t result = unsigned_addition_carry_check_4_bit(a,b);
+    ASSERT_EQ(result,1);
+}
+
+TEST(overflow_4bit_2, ExampleTest){
+    uint8_t a = 10;
+    uint8_t b = 5;
+    uint8_t result = unsigned_addition_carry_check_4_bit(a,b);
+    ASSERT_EQ(result,0);
+}
+
+TEST(overflow_4bit_3, ExampleTest){
+    uint8_t a = 6;
+    uint8_t b = 10;
+    uint8_t result = unsigned_addition_carry_check_4_bit(a,b);
+    ASSERT_EQ(result,1);
+}
+
+ 
+TEST(overflow_4bit_4, ExampleTest){
+    uint8_t a = 0;
+    uint8_t b = 31; // this should be seen as 1(4bit), but adding just cause 
+    uint8_t result = unsigned_addition_carry_check_4_bit(a,b);
+    ASSERT_EQ(result,0);
+}
+
+TEST(overflow_4bit_5, ExampleTest){
+    uint8_t a = 5;
+    uint8_t b = 5;
+    uint8_t result = unsigned_addition_carry_check_4_bit(a,b);
+    ASSERT_EQ(result,0);
+}
+
+
+TEST(overflow_16bit_1, ExampleTest){
+    uint16_t a = 150;
+    uint16_t b = 65535;
+    uint8_t result = unsigned_addition_carry_check_16_bit(a,b);
+    ASSERT_EQ(result,1);
+}
+ 
+TEST(overflow_16bit_2, ExampleTest){
+    uint16_t a = 150;
+    uint16_t b = 65535;
+    uint8_t result = unsigned_addition_carry_check_16_bit(b,a);
+    ASSERT_EQ(result,1);
+}
+
+  
+TEST(overflow_16bit_3, ExampleTest){
+    uint16_t a = 0;
+    uint16_t b = 65535;
+    uint8_t result = unsigned_addition_carry_check_16_bit(a,b);
+    ASSERT_EQ(result,0);
+}
+
+TEST(overflow_16bit_4, ExampleTest){
+    uint16_t a = 65535;
+    uint16_t b = 65535;
+    uint8_t result = unsigned_addition_carry_check_16_bit(a,b);
+    ASSERT_EQ(result,1);
+}
+
+ 
+TEST(overflow_16bit_5, ExampleTest){
+    uint16_t a = 6550;
+    uint16_t b = 25535;
+    uint8_t result = unsigned_addition_carry_check_16_bit(a,b);
+    ASSERT_EQ(result,0);
+}                    
+ 
+ 
+
 //overflow tests
 
 TEST(OverflowTest_1, ExampleTest){
