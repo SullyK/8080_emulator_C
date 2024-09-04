@@ -708,8 +708,7 @@ void add_reg_pair_to_HL(CPU *cpu, uint8_t *high, uint8_t *low){
     return;
 }
 
-void decimal_adjust_accumulator(CPU *cpu){ //TODO: resume here and do the flags for this n then test 
-					   //this and all other logical addiiton functions
+void decimal_adjust_accumulator(CPU *cpu){ 
     if((cpu->registers.A & 0xF) > 9 || cpu->flags.AC == 1){
 	cpu->registers.A += 6;
 	cpu->flags.AC = 1;
@@ -727,7 +726,13 @@ void decimal_adjust_accumulator(CPU *cpu){ //TODO: resume here and do the flags 
     else{
 	cpu->flags.C = 0;
     }
-	
+ 
+
+    cpu->flags.S = check_signed_bit(cpu->registers.A); //@@@ TODO: check this is fine
+    cpu->flags.Z = zero(cpu->registers.A);              //@@@ TODO: check this is fine
+        
 
 }
-	
+
+//TODO: WHAT NEXT?
+// - do the intergration tests for these functions on this page to make sure they work correctly
