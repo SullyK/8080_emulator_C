@@ -73,6 +73,8 @@ uint8_t check_parity(uint8_t number) {
 }
 
 uint8_t set_aux_carry(uint8_t number) { // naive implementation
+					// @@@ TODO: Apparently this may not be right for
+					// subtraction? investigate later
   int extract_half_byte = number & 0xf;
 
   if (extract_half_byte > 9) {

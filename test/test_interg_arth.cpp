@@ -330,4 +330,119 @@ TEST(add_data_carry_6, ExampleTest) {
   ASSERT_EQ(cpu.flags.AC, 0);
 } 
 
+TEST(subtract_register_1, ExampleTest){
+    CPU cpu = {0};
+    cpu.registers.A = 200;
+    uint8_t test_register = 50;
+    subtract_register(&cpu, test_register);
+    ASSERT_EQ(cpu.registers.A, 150);
+    ASSERT_EQ(cpu.flags.C, 0);
+    ASSERT_EQ(cpu.flags.S, 1);
+    ASSERT_EQ(cpu.flags.Z, 0);
+    ASSERT_EQ(cpu.flags.P, 1);
+    ASSERT_EQ(cpu.flags.AC, 0);
+}
+
+ 
+TEST(subtract_register_2, ExampleTest){
+    CPU cpu = {0};
+    cpu.registers.A = 255;
+    uint8_t test_register = 255;
+    subtract_register(&cpu, test_register);
+    ASSERT_EQ(cpu.registers.A, 0);
+    ASSERT_EQ(cpu.flags.C, 0);
+    ASSERT_EQ(cpu.flags.S, 0);
+    ASSERT_EQ(cpu.flags.Z, 1);
+    ASSERT_EQ(cpu.flags.P, 1);
+    ASSERT_EQ(cpu.flags.AC, 0);
+} 
+
+TEST(subtract_register_3, ExampleTest){
+    CPU cpu = {0};
+    cpu.registers.A = 10;
+    uint8_t test_register = 20;
+    subtract_register(&cpu, test_register);
+    ASSERT_EQ(cpu.registers.A, 246);
+    ASSERT_EQ(cpu.flags.C, 1);
+    ASSERT_EQ(cpu.flags.S, 1);
+    ASSERT_EQ(cpu.flags.Z, 0);
+    ASSERT_EQ(cpu.flags.P, 1);
+    ASSERT_EQ(cpu.flags.AC, 0);
+} 
+ 
+TEST(subtract_memory_1, ExampleTest){
+    CPU cpu = {0};
+    cpu.registers.A = 100;
+    cpu.registers.H = 20;
+    cpu.registers.L = 10;
+    uint16_t temp_16_bit_test = (cpu.registers.H << 8) | cpu.registers.L;
+    cpu.memory[5130] = 1;
+    subtract_memory(&cpu, temp_16_bit_test);
+    ASSERT_EQ(cpu.registers.A, 99);
+    ASSERT_EQ(cpu.flags.C, 0);
+    ASSERT_EQ(cpu.flags.S, 0); //@@@ TODO: sanity check - meant to be  right?
+    ASSERT_EQ(cpu.flags.Z, 0);
+    ASSERT_EQ(cpu.flags.P, 1);
+    ASSERT_EQ(cpu.flags.AC, 0);
+} 
+
+ 
+TEST(subtract_memory_2, ExampleTest){
+    CPU cpu = {0};
+    cpu.registers.A = 255;
+    uint16_t HL_placeholder = 200;
+    cpu.memory[HL_placeholder] = 122;
+    subtract_memory(&cpu,HL_placeholder);
+    ASSERT_EQ(cpu.registers.A,133);
+    ASSERT_EQ(cpu.flags.C, 0);
+    ASSERT_EQ(cpu.flags.S, 1);
+    ASSERT_EQ(cpu.flags.Z, 0);
+    ASSERT_EQ(cpu.flags.P, 0);
+    ASSERT_EQ(cpu.flags.AC, 0);
+} 
+ 
+TEST(subtract_memory_3, ExampleTest){
+    CPU cpu = {0};
+    cpu.registers.A = 0;
+    uint16_t HL_placeholder = 500;
+    cpu.memory[HL_placeholder] = 1;
+    subtract_memory(&cpu,HL_placeholder);
+    ASSERT_EQ(cpu.registers.A,255); //@@@ TODO: ARE THESE FLAGS CORRECT?
+    ASSERT_EQ(cpu.flags.C, 1);
+    ASSERT_EQ(cpu.flags.S, 1);
+    ASSERT_EQ(cpu.flags.Z, 0);
+    ASSERT_EQ(cpu.flags.P, 1);
+    ASSERT_EQ(cpu.flags.AC, 1);
+} 
+
+TEST(subtract_register_carry_1, ExampleTest){
+    CPU cpu = {0};
+    cpu.registers.A = 10;
+    cpu.flags.C = 1;
+    uint8_t test_register = 1;
+    subtract_register_carry(&cpu, test_register);
+    ASSERT_EQ(cpu.registers.A, 8);//@@@ TODO: ARE THESE FLAGS CORRECT?
+    ASSERT_EQ(cpu.flags.C, 0);
+    ASSERT_EQ(cpu.flags.S, 0);
+    ASSERT_EQ(cpu.flags.Z, 0);
+    ASSERT_EQ(cpu.flags.P, 0);
+    ASSERT_EQ(cpu.flags.AC, 0);
+}
+ 
+TEST(subtract_register_carry_2, ExampleTest){
+    CPU cpu = {0};
+    cpu.registers.A = 10;
+    cpu.flags.C = 1;
+    uint8_t test_register = 0;
+    subtract_register_carry(&cpu, test_register);
+    ASSERT_EQ(cpu.registers.A, 9);//@@@ TODO: ARE THESE FLAGS CORRECT?
+    ASSERT_EQ(cpu.flags.C, 0);
+    ASSERT_EQ(cpu.flags.S, 0);
+    ASSERT_EQ(cpu.flags.Z, 0);
+    ASSERT_EQ(cpu.flags.P, 1);
+    ASSERT_EQ(cpu.flags.AC, 0);
+}
+ 
+ 
+ 
 // void add_register(CPU *cpu, uint8_t reg_value);
