@@ -535,8 +535,10 @@ void subtract_data_carry(
 
 void increment_register(CPU *cpu, uint8_t *reg) { // NEED to pass in a register
                                                   // e.g &cpu.registers.A
-  uint8_t result = *reg + 1;
+
+  uint8_t result = (*reg) + 1;
   *reg = result;
+
   // signed
   uint8_t sign = check_signed_bit(result);
   if (sign) {

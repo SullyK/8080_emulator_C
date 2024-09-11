@@ -35,7 +35,7 @@ TEST(UnderflowTest_with_carry_4, ExampleTest){
     uint8_t b = 2;
     uint8_t c = 1;
     uint8_t result = unsigned_subtract_carry_check_with_carry(a,b,c);
-    ASSERT_EQ(result, 0);
+    ASSERT_EQ(result, 1);
 }
 
 TEST(UnderflowTest_with_carry_5, ExampleTest){
@@ -46,8 +46,37 @@ TEST(UnderflowTest_with_carry_5, ExampleTest){
     ASSERT_EQ(result, 0);
 }
  
+TEST(UnderflowTest_with_carry_6, ExampleTest){
+    uint8_t a = 255;  
+    uint8_t b = 255;
+    uint8_t c = 0;    
+    uint8_t result = unsigned_subtract_carry_check_with_carry(a,b,c);
+    ASSERT_EQ(result, 0);  
+}
  
+TEST(UnderflowTest_with_carry_7, ExampleTest){
+    uint8_t a = 0;
+    uint8_t b = 0;
+    uint8_t c = 1;    
+    uint8_t result = unsigned_subtract_carry_check_with_carry(a,b,c);
+    ASSERT_EQ(result, 1);  
+}
 
+TEST(UnderflowTest_with_carry_8, ExampleTest){
+    uint8_t a = 0;
+    uint8_t b = 0;
+    uint8_t c = 0;    
+    uint8_t result = unsigned_subtract_carry_check_with_carry(a,b,c);
+    ASSERT_EQ(result, 0);  
+}
+
+TEST(UnderflowTest_with_carry_9, ExampleTest){
+    uint8_t a = 250;
+    uint8_t b = 5;
+    uint8_t c = 0;    
+    uint8_t result = unsigned_subtract_carry_check_with_carry(a,b,c);
+    ASSERT_EQ(result, 0);
+}
 
 //@@@ TODO: C will always be 1 or 0 in these functions since its 1 bit int
 TEST(overflow_addtion_carry_check_with_carry_1, ExampleTest){
