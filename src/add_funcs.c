@@ -674,14 +674,11 @@ void increment_register_pair(uint8_t *high,
                                              // will edit
   uint16_t combined_reg = combine_registers(*high, *low); //combine
   combined_reg = combined_reg + 1;
-  SplitBytes sb = split_bytes(combined_reg); //split
+  SplitBytes sb = split_bytes(combined_reg); //split @@@TODO: write tests for these helper
+					     //functions
   *high = sb.high;
   *low = sb.low;
-  return;
-  //TODO: resume here:
-  //3) check this and other .h files proper
-  //4) finish the final few functions
-  //5) test them all
+  return; //@@@ TODO: probably better to return something.
 }
 
 

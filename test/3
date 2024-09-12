@@ -671,8 +671,8 @@ TEST(decrement_register_pair_2, ExampleTest){
     cpu.registers.B = 10;
     cpu.registers.C = 0xFF;
     increment_register_pair(&cpu.registers.B,&cpu.registers.C);
-    ASSERT_EQ(cpu.registers.B, 9);
-    ASSERT_EQ(cpu.registers.C, 0xFF);
+    ASSERT_EQ(cpu.registers.B, 1);
+    ASSERT_EQ(cpu.registers.C, 0);
 }
  
 TEST(decrement_register_pair_3, ExampleTest){
@@ -684,7 +684,7 @@ TEST(decrement_register_pair_3, ExampleTest){
     ASSERT_EQ(cpu.registers.C, 0);
 }
 
-TEST(decrement_register_pair_4, ExampleTest){
+TEST(increment_register_pair_4, ExampleTest){
     CPU cpu = {0};
     cpu.registers.B = 0xFF;
     cpu.registers.C = 0;
