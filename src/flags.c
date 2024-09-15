@@ -1,6 +1,8 @@
-#include "art.h"
+#include "flags.h"
 #include "cpu.h"
 
+//@@@ TODO: MOVE These non-flag functions to helper.h depending on how important they are to
+//other functions
 
 // @@@ TODO: i preferred 0b1111 but it's not really c standard, and I didn't want random 15
 // I might need to change this to be more clear in the future

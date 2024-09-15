@@ -1,5 +1,5 @@
-#include "../src/add_funcs.h"
-#include "../src/art.h"
+#include "../src/arith.h"
+#include "../src/flags.h"
 #include "../src/cpu.h"
 #include <gtest/gtest.h>
 #include <iostream>

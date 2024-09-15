@@ -1,4 +1,4 @@
-#include "add_funcs.h"
+#include "arith.h"
 // TODO: NAME EACH FUNC TO CORRESPENDING ENTRY ON DATABOOK EXAMPLE
 // DCR M FOR decrement_memory
 

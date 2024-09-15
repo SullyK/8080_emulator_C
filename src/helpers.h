@@ -1,6 +1,6 @@
 #ifndef HELPERS
 #define HELPERS
-#include "art.h"
+#include "flags.h"
 #include "cpu.h"
 #include <stdint.h>
                               

@@ -1,6 +1,6 @@
 #ifndef ADD_FUNCS
 #define ADD_FUNCS
-#include "art.h"
+#include "flags.h"
 #include "cpu.h"
 #include "helpers.h"
 #include <stdint.h>

@@ -1,6 +1,6 @@
 #include<stdio.h>
 #include "cpu.h"
-#include "art.h"
+#include "flags.h"
 
 int main(){
 

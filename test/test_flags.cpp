@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <iostream>
-#include "../src/art.h"
+#include "../src/flags.h"
 
 //@@@ TODO: change where I place these below tests, just need to check they work
 
