@@ -691,6 +691,9 @@ void decrement_register_pair(uint8_t *high, uint8_t *low){
     return;
 }
 
+//@@@TODO: maybe just take the combined pair here?
+//makes more sense, but do it in refactors
+//and will need to change the test
 void add_reg_pair_to_HL(CPU *cpu, uint8_t *high, uint8_t *low){
     uint16_t combined_reg = combine_registers(*high, *low);
     uint16_t combined_hl = combine_registers(cpu->registers.H, cpu->registers.L);
@@ -709,11 +712,22 @@ void add_reg_pair_to_HL(CPU *cpu, uint8_t *high, uint8_t *low){
 
 void decimal_adjust_accumulator(CPU *cpu){ 
     if((cpu->registers.A & 0xF) > 9 || cpu->flags.AC == 1){
-	cpu->registers.A += 6;
+	uint8_t carry = unsigned_addition_carry_check(cpu->registers.A,6);
+	if(carry){
+	    cpu->flags.C = 1;
+	}// don't think we set 0, might affecct things if no carry occurs here and it is reset,
+	 // because of this else
+	cpu->registers.A = cpu->registers.A + 6;
 	cpu->flags.AC = 1;
-    }else{ // sort this crap show out.
+    }else{ 
 	cpu->flags.AC = 0;
     }
+    cpu->flags.S = check_signed_bit(cpu->registers.A);
+    cpu->flags.Z = zero(cpu->registers.A);
+    cpu->flags.P = check_parity(cpu->registers.A);
+ 
+        
+ 
 
     if((cpu->registers.A >> 4) > 9 || cpu->flags.C == 1){
 	uint8_t high_bits = cpu->registers.A >> 4;
@@ -721,15 +735,15 @@ void decimal_adjust_accumulator(CPU *cpu){
 	high_bits += 6;
 	cpu->registers.A = (high_bits << 4) | low_bits;
 	cpu->flags.C = 1;
+        cpu->flags.S = check_signed_bit(cpu->registers.A);
+     cpu->flags.Z = zero(cpu->registers.A);
+     cpu->flags.P = check_parity(cpu->registers.A);
+     cpu->flags.AC = set_aux_carry(cpu->registers.A);
+
 	}
     else{
 	cpu->flags.C = 0;
     }
- 
-
-    cpu->flags.S = check_signed_bit(cpu->registers.A); //@@@ TODO: check this is fine
-    cpu->flags.Z = zero(cpu->registers.A);              //@@@ TODO: check this is fine
-        
 
 }
 

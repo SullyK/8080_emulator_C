@@ -670,9 +670,9 @@ TEST(decrement_register_pair_2, ExampleTest){
     CPU cpu = {0};
     cpu.registers.B = 10;
     cpu.registers.C = 0xFF;
-    increment_register_pair(&cpu.registers.B,&cpu.registers.C);
-    ASSERT_EQ(cpu.registers.B, 9);
-    ASSERT_EQ(cpu.registers.C, 0xFF);
+    decrement_register_pair(&cpu.registers.B,&cpu.registers.C);
+    ASSERT_EQ(cpu.registers.B, 0xA);
+    ASSERT_EQ(cpu.registers.C, 0xFE);
 }
  
 TEST(decrement_register_pair_3, ExampleTest){
@@ -693,3 +693,127 @@ TEST(decrement_register_pair_4, ExampleTest){
     ASSERT_EQ(cpu.registers.C, 1);
 }
  
+TEST(add_register_pair_HL_1, ExampleTest){
+    CPU cpu = {0};
+    cpu.registers.B = 0x05;
+    cpu.registers.C = 0x10;
+    cpu.registers.H = 0x01;
+    cpu.registers.L = 0x01;
+    add_reg_pair_to_HL(&cpu, &cpu.registers.B, &cpu.registers.C);
+    uint16_t result = (cpu.registers.H << 8) | cpu.registers.L;
+    ASSERT_EQ(result, 1553);
+    ASSERT_EQ(cpu.flags.C, 0);
+}
+
+TEST(add_register_pair_HL_2, ExampleTest){
+    CPU cpu = {0};
+    cpu.registers.B = 0xFF;
+    cpu.registers.C = 0xFF;
+    cpu.registers.H = 0xFF;
+    cpu.registers.L = 0xFF;
+    add_reg_pair_to_HL(&cpu, &cpu.registers.B, &cpu.registers.C);
+    uint16_t result = (cpu.registers.H << 8) | cpu.registers.L;
+    ASSERT_EQ(result, 65534);
+    ASSERT_EQ(cpu.flags.C, 1);
+}
+ 
+TEST(add_register_pair_HL_3, ExampleTest){
+    CPU cpu = {0};
+    cpu.registers.B = 0xFF;
+    cpu.registers.C = 0xFF;
+    cpu.registers.H = 0x0;
+    cpu.registers.L = 0x0;
+    add_reg_pair_to_HL(&cpu, &cpu.registers.B, &cpu.registers.C);
+    uint16_t result = (cpu.registers.H << 8) | cpu.registers.L;
+    ASSERT_EQ(result, 0xFFFF);
+    ASSERT_EQ(cpu.flags.C, 0);
+}     
+
+//@@@TODO: I am not sure how happy I am for these testing the DAA correctly so I need to come
+//back and sort this out
+
+TEST(decimal_adjust_accumulator_1, ExampleTest){
+    CPU cpu = {0};
+    cpu.registers.A = 200; //0b11001000
+    decimal_adjust_accumulator(&cpu);
+    //not greater than 9 4 bits 
+    //AC flag not set either so step one skipped
+    //0b1100 -> greater than 9 so add 6
+    //but that gives 0b10010 and 1 is carried so 0b0010
+    //combined we are left with 0b00101000(40)
+    ASSERT_EQ(cpu.registers.A, 40);
+    ASSERT_EQ(cpu.flags.C, 1);
+}
+
+TEST(decimal_adjust_accumulator_2, ExampleTest){
+    CPU cpu = {0};
+    cpu.registers.A = 255; //0b11111111
+    decimal_adjust_accumulator(&cpu);
+    //step 1 =  0b00000101
+    //step 2 = 0b0110 0101
+    ASSERT_EQ(cpu.registers.A, 101);
+    ASSERT_EQ(cpu.flags.C, 1);
+    ASSERT_EQ(cpu.flags.AC, 0);
+}
+
+TEST(decimal_adjust_accumulator_3, ExampleTest) {
+    CPU cpu = {0};
+    cpu.registers.A = 0x23;
+    decimal_adjust_accumulator(&cpu);
+    ASSERT_EQ(cpu.registers.A, 0x23);
+    ASSERT_EQ(cpu.flags.C, 0);
+}
+
+TEST(decimal_adjust_accumulator_4, ExampleTest) {
+    CPU cpu = {0};
+    cpu.registers.A = 0x19;
+    decimal_adjust_accumulator(&cpu);
+    ASSERT_EQ(cpu.registers.A, 0x19);
+    ASSERT_EQ(cpu.flags.C, 0);
+    ASSERT_EQ(cpu.flags.AC, 0);
+}
+
+TEST(decimal_adjust_accumulator_5, Nochanges) {
+    CPU cpu = {0};
+    cpu.registers.A = 0x91;
+    decimal_adjust_accumulator(&cpu);
+    ASSERT_EQ(cpu.registers.A, 0x91);
+    ASSERT_EQ(cpu.flags.C, 0);
+    ASSERT_EQ(cpu.flags.AC, 0);
+}
+
+TEST(decimal_adjust_accumulator_6, AccumulatorIs0xFF) {
+    CPU cpu = {0};
+    cpu.registers.A = 0xFF;
+    decimal_adjust_accumulator(&cpu);
+    ASSERT_EQ(cpu.registers.A, 0x65);
+    ASSERT_EQ(cpu.flags.C, 1);
+}
+
+TEST(decimal_adjust_accumulator_7, ResultZeroAfterAdjustment) {
+    CPU cpu = {0};
+    cpu.registers.A = 0x90; //0b10010000
+    decimal_adjust_accumulator(&cpu);
+    //step one ignored, too low
+    //step two ignored too because its =9
+    ASSERT_EQ(cpu.registers.A, 0x90);
+    ASSERT_EQ(cpu.flags.C, 0);
+    ASSERT_EQ(cpu.flags.AC, 0);
+}
+
+TEST(decimal_adjust_accumulator_8, JustBelowAdjustmentThreshold) {
+    CPU cpu = {0};
+    cpu.registers.A = 0x08;
+    decimal_adjust_accumulator(&cpu);
+    ASSERT_EQ(cpu.registers.A, 0x08);
+    ASSERT_EQ(cpu.flags.C, 0);
+}
+
+TEST(decimal_adjust_accumulator_9, OnlyTopBytes) {
+    CPU cpu = {0};
+    cpu.registers.A = 0xA0;
+    decimal_adjust_accumulator(&cpu);
+    ASSERT_EQ(cpu.registers.A, 0x00);
+    ASSERT_EQ(cpu.flags.C, 1);
+    ASSERT_EQ(cpu.flags.AC, 0);
+}
