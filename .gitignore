@@ -18,3 +18,4 @@ googletest/CTestTestfile.cmake
 googletest/Testing/
 googletest/*.swp
 googletest/*~
+todo.txt

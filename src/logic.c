@@ -87,7 +87,7 @@ void compare_register(CPU *cpu, uint8_t reg) {
   uint8_t result = cpu->registers.A - reg;
   cpu->flags.C = unsigned_subtract_carry_check(cpu->registers.A, reg);
   cpu->flags.AC = set_aux_carry(result);
-  cpu->flags.S = check_signed_bit(cpu->registers.A);
-  cpu->flags.P = check_parity(cpu->registers.A);
-  cpu->flags.Z = zero(cpu->registers.A);
+  cpu->flags.S = check_signed_bit(result);
+  cpu->flags.P = check_parity(result);
+  cpu->flags.Z = zero(result);
 }

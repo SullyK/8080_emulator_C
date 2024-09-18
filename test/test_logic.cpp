@@ -226,7 +226,7 @@ TEST(exclusive_or_memory, Basic3) {
 }
 
 //@@@ TODO: these TESTS are 100% the same as the exclusive_or_register but I
-//needed to make tests for this in case I swap those to take actual register
+// needed to make tests for this in case I swap those to take actual register
 // values, i haven't decided yet, will do in main loop. Point is this is here
 // for now incase I make changes to that later
 TEST(exclusive_or_immediate, Basic1) {
@@ -318,11 +318,8 @@ TEST(or_register, Basic2) {
   ASSERT_EQ(cpu.flags.P, 1);
   ASSERT_EQ(cpu.flags.Z, 0);
   ASSERT_EQ(cpu.flags.S, 1);
-  
-
 }
- 
- 
+
 TEST(or_register, Basic3) {
   CPU cpu = {0};
   cpu.registers.A = 0b11111111;
@@ -334,8 +331,6 @@ TEST(or_register, Basic3) {
   ASSERT_EQ(cpu.flags.P, 1);
   ASSERT_EQ(cpu.flags.Z, 0);
   ASSERT_EQ(cpu.flags.S, 1);
-  
-
 }
 
 TEST(or_register, Basic4) {
@@ -350,8 +345,7 @@ TEST(or_register, Basic4) {
   ASSERT_EQ(cpu.flags.Z, 0);
   ASSERT_EQ(cpu.flags.S, 1);
 }
- 
- 
+
 TEST(or_register, Basic5) {
   CPU cpu = {0};
   cpu.registers.A = 0b10000001;
@@ -378,8 +372,8 @@ TEST(or_memory, Basic1) {
   ASSERT_EQ(cpu.flags.Z, 0);
   ASSERT_EQ(cpu.flags.S, 1);
 }
- 
- TEST(or_memory, Basic2) {
+
+TEST(or_memory, Basic2) {
   CPU cpu = {0};
   cpu.registers.A = 0b11111111;
   uint16_t HL = 1000;
@@ -392,8 +386,7 @@ TEST(or_memory, Basic1) {
   ASSERT_EQ(cpu.flags.Z, 0);
   ASSERT_EQ(cpu.flags.S, 1);
 }
- 
- 
+
 //@@@ TODO: exact same as register tests, but immediate
 TEST(or_immediate, Basic1) {
   CPU cpu = {0};
@@ -419,11 +412,8 @@ TEST(or_immediate, Basic2) {
   ASSERT_EQ(cpu.flags.P, 1);
   ASSERT_EQ(cpu.flags.Z, 0);
   ASSERT_EQ(cpu.flags.S, 1);
-  
-
 }
- 
- 
+
 TEST(or_immediate, Basic3) {
   CPU cpu = {0};
   cpu.registers.A = 0b11111111;
@@ -435,8 +425,6 @@ TEST(or_immediate, Basic3) {
   ASSERT_EQ(cpu.flags.P, 1);
   ASSERT_EQ(cpu.flags.Z, 0);
   ASSERT_EQ(cpu.flags.S, 1);
-  
-
 }
 
 TEST(or_immediate, Basic4) {
@@ -451,8 +439,7 @@ TEST(or_immediate, Basic4) {
   ASSERT_EQ(cpu.flags.Z, 0);
   ASSERT_EQ(cpu.flags.S, 1);
 }
- 
- 
+
 TEST(or_immediate, Basic5) {
   CPU cpu = {0};
   cpu.registers.A = 0b10000001;
@@ -466,20 +453,29 @@ TEST(or_immediate, Basic5) {
   ASSERT_EQ(cpu.flags.S, 1);
 }
 
-TEST(compare_register, Basic5) {
+TEST(compare_register, Basic1BigMinusSmall) {
   CPU cpu = {0};
   cpu.registers.A = 0b10000001;
   uint8_t example_register = 0b01010101;
-  or_immediate(&cpu, example_register);
-  ASSERT_EQ(cpu.registers.A, 0b11010101);
+  compare_register(&cpu, example_register);
+  // expected value: 0b00101100
   ASSERT_EQ(cpu.flags.C, 0);
-  ASSERT_EQ(cpu.flags.AC, 0);
+  ASSERT_EQ(cpu.flags.AC, 1);
+  ASSERT_EQ(cpu.flags.P, 0);
+  ASSERT_EQ(cpu.flags.Z, 0);
+  ASSERT_EQ(cpu.flags.S, 0);
+}
+
+TEST(compare_register, Basic1SmallMinusBig){
+  CPU cpu = {0};
+  cpu.registers.A = 0b0;
+  uint8_t example_register = 0b11111111;
+  compare_register(&cpu, example_register);
+  // expected value: 0b11111110
+  ASSERT_EQ(cpu.flags.C, 1);
+  ASSERT_EQ(cpu.flags.AC, 1);
   ASSERT_EQ(cpu.flags.P, 0);
   ASSERT_EQ(cpu.flags.Z, 0);
   ASSERT_EQ(cpu.flags.S, 1);
 }
-
-//$$$ Continue here
-
  
-
