@@ -378,70 +378,33 @@ TEST(ParityTest_10, ExampleTest) {
 
 // aux carry tests
 TEST(AuxCarryTest_1, ExampleTest) {
-  uint8_t number = 0b00001111;
-  uint8_t result = set_aux_carry(number);
+  uint8_t number1 = 0b00001111;
+  uint8_t number2 = 0b00000001;
+  uint8_t result = aux_carry_add(number1, number2);
   ASSERT_EQ(result, 1);
 }
 
 TEST(AuxCarryTest_2, ExampleTest) {
-  uint8_t number = 0b00000111;
-  uint8_t result = set_aux_carry(number);
+  uint8_t number1 = 0b00000111;
+  uint8_t number2 = 0b00000001;
+  uint8_t result = aux_carry_add(number1, number2);
   ASSERT_EQ(result, 0);
 }
 
 TEST(AuxCarryTest_3, ExampleTest) {
-  uint8_t number = 0b1110111;
-  uint8_t result = set_aux_carry(number);
-  ASSERT_EQ(result, 0);
+  uint8_t number1 = 0b00001101;
+  uint8_t number2 = 0b00000011;
+  uint8_t result = aux_carry_add(number1, number2);
+  ASSERT_EQ(result, 1);
 }
 
 TEST(AuxCarryTest_4, ExampleTest) {
-  uint8_t number = 0b11110000;
-  uint8_t result = set_aux_carry(number);
+  uint8_t number1 = 0b00001000;
+  uint8_t number2 = 0b00000111;
+  uint8_t result = aux_carry_add(number1, number2);
   ASSERT_EQ(result, 0);
 }
 
-TEST(AuxCarryTest_5, ExampleTest) {
-  uint8_t number = 0b11110000;
-  uint8_t result = set_aux_carry(number);
-  ASSERT_EQ(result, 0);
-}
-
-TEST(AuxCarryTest_6, ExampleTest) {
-  uint8_t number = 0b11001011;
-  uint8_t result = set_aux_carry(number);
-  ASSERT_EQ(result, 1);
-}
-
-TEST(AuxCarryTest_7, ExampleTest) {
-  uint8_t number = 0b11001011;
-  uint8_t result = set_aux_carry(number);
-  ASSERT_EQ(result, 1);
-}
-
-TEST(AuxCarryTest_8, ExampleTest) {
-  uint8_t number = 0b11001100;
-  uint8_t result = set_aux_carry(number);
-  ASSERT_EQ(result, 1);
-}
-
-TEST(AuxCarryTest_9, ExampleTest) {
-  uint8_t number = 0b11001001;
-  uint8_t result = set_aux_carry(number);
-  ASSERT_EQ(result, 0);
-}
-
-TEST(AuxCarryTest_10, ExampleTest) {
-  uint8_t number = 0b11001011;
-  uint8_t result = set_aux_carry(number);
-  ASSERT_EQ(result, 1);
-}
-
-TEST(AuxCarryTest_11, ExampleTest) {
-  uint8_t number = 0b11011011;
-  uint8_t result = set_aux_carry(number);
-  ASSERT_EQ(result, 1);
-}
 
 // zero tests
 TEST(ZeroTest_1, ExampleTest) {

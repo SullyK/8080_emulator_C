@@ -35,7 +35,7 @@ TEST(add_register_2, ExampleTest) {
   ASSERT_EQ(cpu.flags.S, 0);
   ASSERT_EQ(cpu.flags.Z, 0);
   ASSERT_EQ(cpu.flags.P, 0);
-  ASSERT_EQ(cpu.flags.AC, 1);
+  ASSERT_EQ(cpu.flags.AC, 0);
 }
 
 TEST(add_register_3, ExampleTest) {
@@ -48,7 +48,7 @@ TEST(add_register_3, ExampleTest) {
   ASSERT_EQ(cpu.flags.S, 0);
   ASSERT_EQ(cpu.flags.Z, 0);
   ASSERT_EQ(cpu.flags.P, 1);
-  ASSERT_EQ(cpu.flags.AC, 1);
+  ASSERT_EQ(cpu.flags.AC, 0);
 }
 
 // add memory function tests
@@ -63,7 +63,7 @@ TEST(add_memory_1, ExampleTest) {
   ASSERT_EQ(cpu.flags.S, 0);
   ASSERT_EQ(cpu.flags.Z, 0);
   ASSERT_EQ(cpu.flags.P, 1);
-  ASSERT_EQ(cpu.flags.AC, 0);
+  ASSERT_EQ(cpu.flags.AC, 1);
 }
 
 TEST(add_memory_2, ExampleTest) {
@@ -77,7 +77,7 @@ TEST(add_memory_2, ExampleTest) {
   ASSERT_EQ(cpu.flags.S, 0);
   ASSERT_EQ(cpu.flags.Z, 0);
   ASSERT_EQ(cpu.flags.P, 0);
-  ASSERT_EQ(cpu.flags.AC, 0);
+  ASSERT_EQ(cpu.flags.AC, 1);
 }
 
 TEST(add_memory_3, ExampleTest) {
@@ -91,7 +91,7 @@ TEST(add_memory_3, ExampleTest) {
   ASSERT_EQ(cpu.flags.S, 0);
   ASSERT_EQ(cpu.flags.Z, 1);
   ASSERT_EQ(cpu.flags.P, 1);
-  ASSERT_EQ(cpu.flags.AC, 0);
+  ASSERT_EQ(cpu.flags.AC, 1);
 }
 
 TEST(add_memory_4, ExampleTest) {
@@ -105,7 +105,7 @@ TEST(add_memory_4, ExampleTest) {
   ASSERT_EQ(cpu.flags.S, 0);
   ASSERT_EQ(cpu.flags.Z, 1);
   ASSERT_EQ(cpu.flags.P, 1);
-  ASSERT_EQ(cpu.flags.AC, 0);
+  ASSERT_EQ(cpu.flags.AC, 1);
 }
 
 TEST(add_memory_5, ExampleTest) {
@@ -151,7 +151,7 @@ TEST(add_register_carry_2, ExampleTest) {
   ASSERT_EQ(cpu.flags.S, 1);
   ASSERT_EQ(cpu.flags.Z, 0);
   ASSERT_EQ(cpu.flags.P, 1);
-  ASSERT_EQ(cpu.flags.AC, 1);
+  ASSERT_EQ(cpu.flags.AC, 0);
 }
 
 TEST(add_register_carry_3, ExampleTest) {
@@ -165,7 +165,7 @@ TEST(add_register_carry_3, ExampleTest) {
   ASSERT_EQ(cpu.flags.S, 0);
   ASSERT_EQ(cpu.flags.Z, 1);
   ASSERT_EQ(cpu.flags.P, 1);
-  ASSERT_EQ(cpu.flags.AC, 0);
+  ASSERT_EQ(cpu.flags.AC, 1);
 }
 
 TEST(add_register_carry_4, ExampleTest) {
@@ -179,7 +179,7 @@ TEST(add_register_carry_4, ExampleTest) {
   ASSERT_EQ(cpu.flags.S, 0);
   ASSERT_EQ(cpu.flags.Z, 1);
   ASSERT_EQ(cpu.flags.P, 1);
-  ASSERT_EQ(cpu.flags.AC, 0);
+  ASSERT_EQ(cpu.flags.AC, 1);
 }
 
 TEST(add_register_carry_5, ExampleTest) {
@@ -193,7 +193,7 @@ TEST(add_register_carry_5, ExampleTest) {
   ASSERT_EQ(cpu.flags.S, 1);
   ASSERT_EQ(cpu.flags.Z, 0);
   ASSERT_EQ(cpu.flags.P, 1);
-  ASSERT_EQ(cpu.flags.AC, 1);
+  ASSERT_EQ(cpu.flags.AC, 0);
 }
 
 // add_memory_carry tests
@@ -540,7 +540,7 @@ TEST(increment_register_1, ExampleTest){
     ASSERT_EQ(cpu.flags.S, 0);
     ASSERT_EQ(cpu.flags.Z, 0);
     ASSERT_EQ(cpu.flags.P, 0);
-    ASSERT_EQ(cpu.flags.AC, 1);
+    ASSERT_EQ(cpu.flags.AC, 0);
 }
 
 TEST(increment_register_2, ExampleTest){
@@ -563,7 +563,7 @@ TEST(increment_register_3, ExampleTest){
     ASSERT_EQ(cpu.flags.S, 1);
     ASSERT_EQ(cpu.flags.Z, 0);
     ASSERT_EQ(cpu.flags.P, 1);
-    ASSERT_EQ(cpu.flags.AC, 1);
+    ASSERT_EQ(cpu.flags.AC, 0);
 }
   
 TEST(increment_register_4, ExampleTest){
@@ -574,7 +574,7 @@ TEST(increment_register_4, ExampleTest){
     ASSERT_EQ(cpu.flags.S, 0);
     ASSERT_EQ(cpu.flags.Z, 1);
     ASSERT_EQ(cpu.flags.P, 1);
-    ASSERT_EQ(cpu.flags.AC, 0);
+    ASSERT_EQ(cpu.flags.AC, 1);
 }
 TEST(increment_memory_1, ExampleTest){
     CPU cpu = {0};
@@ -596,7 +596,7 @@ TEST(increment_memory_2, ExampleTest){
     ASSERT_EQ(cpu.flags.S, 0);
     ASSERT_EQ(cpu.flags.Z, 1);
     ASSERT_EQ(cpu.flags.P, 1);
-    ASSERT_EQ(cpu.flags.AC, 0);
+    ASSERT_EQ(cpu.flags.AC, 1);
 }   
     
 TEST(decrement_register_1, ExampleTest){
@@ -815,5 +815,5 @@ TEST(decimal_adjust_accumulator_9, OnlyTopBytes) {
     decimal_adjust_accumulator(&cpu);
     ASSERT_EQ(cpu.registers.A, 0x00);
     ASSERT_EQ(cpu.flags.C, 1);
-    ASSERT_EQ(cpu.flags.AC, 0);
+    ASSERT_EQ(cpu.flags.AC, 1);
 }

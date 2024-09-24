@@ -19,3 +19,4 @@ googletest/Testing/
 googletest/*.swp
 googletest/*~
 todo.txt
+test.py

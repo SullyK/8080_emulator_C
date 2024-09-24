@@ -8,6 +8,7 @@
 void add_data(CPU *cpu, uint8_t byte_two) {
 
   uint8_t result = cpu->registers.A + byte_two;
+  cpu->flags.AC = aux_carry_add(cpu->registers.A, byte_two);
   uint8_t carry = unsigned_addition_carry_check(cpu->registers.A,
                                                 byte_two); // TODO: I can
                                                            // probably make
@@ -44,11 +45,6 @@ void add_data(CPU *cpu, uint8_t byte_two) {
   }
 
   // aux carry
-  if (set_aux_carry(result)) {
-    cpu->flags.AC = 1;
-  } else {
-    cpu->flags.AC = 0;
-  }
 
   return;
 }
@@ -56,6 +52,8 @@ void add_data(CPU *cpu, uint8_t byte_two) {
 void add_register(CPU *cpu, uint8_t reg_value) {
 
   uint8_t result = cpu->registers.A + reg_value;
+
+  cpu->flags.AC = aux_carry_add(cpu->registers.A, reg_value);
   uint8_t carry = unsigned_addition_carry_check(cpu->registers.A,
                                                 reg_value); // TODO: I can
                                                             // probably make
@@ -91,13 +89,6 @@ void add_register(CPU *cpu, uint8_t reg_value) {
     cpu->flags.P = 0;
   }
 
-  // aux carry
-  if (set_aux_carry(result)) {
-    cpu->flags.AC = 1;
-  } else {
-    cpu->flags.AC = 0;
-  }
-
   return;
 }
 
@@ -113,6 +104,7 @@ void add_memory(CPU *cpu, uint16_t HL) {
                                           // it's been done
                                           // twice
 
+  cpu->flags.AC = aux_carry_add(cpu->registers.A, cpu->memory[HL]);
   uint8_t result = cpu->memory[HL] + cpu->registers.A;
   cpu->registers.A = result;
   // carry
@@ -141,12 +133,6 @@ void add_memory(CPU *cpu, uint16_t HL) {
     cpu->flags.P = 0;
   }
 
-  // aux carry
-  if (set_aux_carry(result)) {
-    cpu->flags.AC = 1;
-  } else {
-    cpu->flags.AC = 0;
-  }
   return;
 }
 
@@ -154,6 +140,9 @@ void add_register_carry(CPU *cpu, uint8_t reg_value) {
 
   // TODO: figure a way to refactor this and the non-carry version
   uint8_t result = cpu->registers.A + reg_value + (uint8_t)cpu->flags.C;
+
+  cpu->flags.AC =
+      aux_carry_add_with_flag(cpu->registers.A, reg_value, cpu->flags.C);
 
   uint8_t carry = unsigned_addition_carry_check_with_carry(
       cpu->registers.A, reg_value, (uint8_t)cpu->flags.C);
@@ -183,13 +172,6 @@ void add_register_carry(CPU *cpu, uint8_t reg_value) {
     cpu->flags.P = 1;
   } else {
     cpu->flags.P = 0;
-  }
-
-  // aux carry
-  if (set_aux_carry(result)) {
-    cpu->flags.AC = 1;
-  } else {
-    cpu->flags.AC = 0;
   }
 
   return;
@@ -541,6 +523,7 @@ void increment_register(CPU *cpu, uint8_t *reg) { // NEED to pass in a register
                                                   // e.g &cpu.registers.A
 
   uint8_t result = (*reg) + 1;
+  cpu->flags.AC = aux_carry_add((*reg), 1);
   *reg = result;
 
   // signed
@@ -562,17 +545,12 @@ void increment_register(CPU *cpu, uint8_t *reg) { // NEED to pass in a register
     cpu->flags.P = 0;
   }
 
-  // aux carry
-  if (set_aux_carry(result)) {
-    cpu->flags.AC = 1;
-  } else {
-    cpu->flags.AC = 0;
-  }
-  return;
+ return;
 }
 
 void increment_memory(CPU *cpu, uint16_t HL) {
   uint8_t result = cpu->memory[HL] + 1;
+  cpu->flags.AC = aux_carry_add(cpu->memory[HL], 1);
   cpu->memory[HL] = result;
   // signed
   uint8_t sign = check_signed_bit(result);
@@ -593,13 +571,7 @@ void increment_memory(CPU *cpu, uint16_t HL) {
     cpu->flags.P = 0;
   }
 
-  // aux carry
-  if (set_aux_carry(result)) {
-    cpu->flags.AC = 1;
-  } else {
-    cpu->flags.AC = 0;
-  }
-  return;
+ return;
 }
 
 void decrement_register(CPU *cpu, uint8_t *reg) { // NEED to pass in a register
@@ -715,7 +687,7 @@ void add_reg_pair_to_HL(CPU *cpu, uint8_t *high, uint8_t *low) {
 }
 
 void decimal_adjust_accumulator(CPU *cpu) {
-  if ((cpu->registers.A & 0xF) > 9 || cpu->flags.AC == 1) {
+  if ((cpu->registers.A & 0x0F) > 9 || cpu->flags.AC == 1) {
     uint8_t carry = unsigned_addition_carry_check(cpu->registers.A, 6);
     if (carry) {
       cpu->flags.C = 1;
@@ -739,13 +711,11 @@ void decimal_adjust_accumulator(CPU *cpu) {
     cpu->flags.S = check_signed_bit(cpu->registers.A);
     cpu->flags.Z = zero(cpu->registers.A);
     cpu->flags.P = check_parity(cpu->registers.A);
-    cpu->flags.AC = set_aux_carry(cpu->registers.A);
-
+    //@@@ TODO: THIS whole function is sus as hell, 
+    //need to properly do this and see if I ddi it properly
+    cpu->flags.AC = (high_bits > 0x0F) ? 1 : 0;
   } else {
     cpu->flags.C = 0;
   }
 }
 
-// TODO: WHAT NEXT?
-//  - do the intergration tests for these functions on this page to make sure
-//  they work correctly
