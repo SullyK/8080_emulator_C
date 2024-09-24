@@ -224,7 +224,7 @@ TEST(add_memory_carry_2, ExampleTest) {
   ASSERT_EQ(cpu.flags.S, 1);
   ASSERT_EQ(cpu.flags.Z, 0);
   ASSERT_EQ(cpu.flags.P, 1);
-  ASSERT_EQ(cpu.flags.AC, 1);
+  ASSERT_EQ(cpu.flags.AC, 0);
 }
 
 TEST(add_memory_carry_3, ExampleTest) {

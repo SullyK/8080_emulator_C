@@ -8,7 +8,7 @@
 void add_data(CPU *cpu, uint8_t byte_two) {
 
   uint8_t result = cpu->registers.A + byte_two;
-  cpu->flags.AC = aux_carry_add(cpu->registers.A, byte_two);
+  cpu->flags.AC = aux_carry_sub(cpu->registers.A, byte_two);
   uint8_t carry = unsigned_addition_carry_check(cpu->registers.A,
                                                 byte_two); // TODO: I can
                                                            // probably make
@@ -43,8 +43,6 @@ void add_data(CPU *cpu, uint8_t byte_two) {
   } else {
     cpu->flags.P = 0;
   }
-
-  // aux carry
 
   return;
 }
@@ -184,6 +182,9 @@ void add_memory_carry(CPU *cpu, uint16_t HL) {
 
   uint8_t result = cpu->registers.A + cpu->memory[HL] + (uint8_t)cpu->flags.C;
 
+  cpu->flags.AC =
+      aux_carry_add_with_flag(cpu->registers.A, cpu->memory[HL], cpu->flags.C);
+
   uint8_t carry = unsigned_addition_carry_check_with_carry(
       cpu->registers.A, cpu->memory[HL], (uint8_t)cpu->flags.C);
   // Carry = and result = same operation really, probably can optimise it
@@ -212,13 +213,6 @@ void add_memory_carry(CPU *cpu, uint16_t HL) {
     cpu->flags.P = 1;
   } else {
     cpu->flags.P = 0;
-  }
-
-  // aux carry
-  if (set_aux_carry(result)) {
-    cpu->flags.AC = 1;
-  } else {
-    cpu->flags.AC = 0;
   }
 
   return;
@@ -273,6 +267,8 @@ void add_data_carry(CPU *cpu, uint8_t byte_two) {
 
 void subtract_register(CPU *cpu, uint8_t reg_value) {
   uint8_t carry = unsigned_subtract_carry_check(cpu->registers.A, reg_value);
+
+  cpu->flags.AC = aux_carry_sub(cpu->registers.A, reg_value);
   uint8_t result = cpu->registers.A - reg_value;
   cpu->registers.A = result;
 
@@ -301,13 +297,6 @@ void subtract_register(CPU *cpu, uint8_t reg_value) {
   } else {
     cpu->flags.P = 0;
   }
-
-  // aux carry
-  if (set_aux_carry(result)) {
-    cpu->flags.AC = 1;
-  } else {
-    cpu->flags.AC = 0;
-  }
   return;
 }
 
@@ -315,6 +304,7 @@ void subtract_data(CPU *cpu, uint8_t byte_two) {
 
   uint8_t result = cpu->registers.A - byte_two;
   uint8_t carry = unsigned_subtract_carry_check(cpu->registers.A, byte_two);
+  cpu->flags.AC = aux_carry_sub(cpu->registers.A, byte_two);
   cpu->registers.A = result;
   // carry
   if (carry == 1) {
@@ -341,14 +331,6 @@ void subtract_data(CPU *cpu, uint8_t byte_two) {
   } else {
     cpu->flags.P = 0;
   }
-
-  // aux carry
-  if (set_aux_carry(result)) {
-    cpu->flags.AC = 1;
-  } else {
-    cpu->flags.AC = 0;
-  }
-
   return;
 }
 
@@ -357,6 +339,8 @@ void subtract_memory(CPU *cpu, uint16_t HL) {
   uint8_t result = cpu->registers.A - cpu->memory[HL];
   uint8_t carry =
       unsigned_subtract_carry_check(cpu->registers.A, cpu->memory[HL]);
+
+  cpu->flags.AC = aux_carry_sub(cpu->registers.A, cpu->memory[HL]);
   cpu->registers.A = result;
   // carry
   if (carry == 1) {
@@ -382,13 +366,6 @@ void subtract_memory(CPU *cpu, uint16_t HL) {
     cpu->flags.P = 1;
   } else {
     cpu->flags.P = 0;
-  }
-
-  // aux carry
-  if (set_aux_carry(result)) {
-    cpu->flags.AC = 1;
-  } else {
-    cpu->flags.AC = 0;
   }
 
   return;
@@ -399,6 +376,8 @@ void subtract_register_carry(CPU *cpu, uint8_t register_value) {
   uint8_t carry = unsigned_subtract_carry_check_with_carry(
       cpu->registers.A, register_value, cpu->flags.C);
 
+  cpu->flags.AC =
+      aux_carry_sub_with_flag(cpu->registers.A, register_value, cpu->flags.C);
   cpu->registers.A = result;
   // carry
   if (carry == 1) {
@@ -426,12 +405,6 @@ void subtract_register_carry(CPU *cpu, uint8_t register_value) {
     cpu->flags.P = 0;
   }
 
-  // aux carry
-  if (set_aux_carry(result)) {
-    cpu->flags.AC = 1;
-  } else {
-    cpu->flags.AC = 0;
-  }
   return;
 }
 
@@ -440,6 +413,9 @@ void subtract_memory_carry(CPU *cpu, uint16_t HL) {
   uint8_t carry = unsigned_subtract_carry_check_with_carry(
       cpu->registers.A, cpu->memory[HL], cpu->flags.C);
 
+  cpu->flags.AC =
+      aux_carry_sub_with_flag(cpu->registers.A, cpu->memory[HL], cpu->flags.C);
+
   cpu->registers.A = result;
   // carry
   if (carry == 1) {
@@ -465,13 +441,6 @@ void subtract_memory_carry(CPU *cpu, uint16_t HL) {
     cpu->flags.P = 1;
   } else {
     cpu->flags.P = 0;
-  }
-
-  // aux carry
-  if (set_aux_carry(result)) {
-    cpu->flags.AC = 1;
-  } else {
-    cpu->flags.AC = 0;
   }
   return;
 }
@@ -482,6 +451,8 @@ void subtract_data_carry(
   uint8_t result = cpu->registers.A - byte_two - cpu->flags.C;
   uint8_t carry = unsigned_subtract_carry_check_with_carry(
       cpu->registers.A, byte_two, cpu->flags.C);
+  cpu->flags.AC =
+      aux_carry_sub_with_flag(cpu->registers.A, byte_two, cpu->flags.C);
 
   cpu->registers.A = result;
   // carry
@@ -508,13 +479,6 @@ void subtract_data_carry(
     cpu->flags.P = 1;
   } else {
     cpu->flags.P = 0;
-  }
-
-  // aux carry
-  if (set_aux_carry(result)) {
-    cpu->flags.AC = 1;
-  } else {
-    cpu->flags.AC = 0;
   }
   return;
 }
@@ -545,7 +509,7 @@ void increment_register(CPU *cpu, uint8_t *reg) { // NEED to pass in a register
     cpu->flags.P = 0;
   }
 
- return;
+  return;
 }
 
 void increment_memory(CPU *cpu, uint16_t HL) {
@@ -571,12 +535,14 @@ void increment_memory(CPU *cpu, uint16_t HL) {
     cpu->flags.P = 0;
   }
 
- return;
+  return;
 }
 
 void decrement_register(CPU *cpu, uint8_t *reg) { // NEED to pass in a register
                                                   // e.g &cpu.registers.A
+  cpu->flags.AC = aux_carry_sub(*reg,1);
   uint8_t result = *reg - 1;
+
   *reg = result;
   // signed
   uint8_t sign = check_signed_bit(result);
@@ -597,18 +563,13 @@ void decrement_register(CPU *cpu, uint8_t *reg) { // NEED to pass in a register
     cpu->flags.P = 0;
   }
 
-  // aux carry
-  if (set_aux_carry(result)) {
-    cpu->flags.AC = 1;
-  } else {
-    cpu->flags.AC = 0;
-  }
   return;
 }
 
 void decrement_memory(CPU *cpu, uint16_t HL) {
   uint8_t result = cpu->memory[HL] - 1;
   cpu->memory[HL] = result;
+  cpu->flags.AC = aux_carry_sub(cpu->memory[HL],1);
   // signed
   uint8_t sign = check_signed_bit(result);
   if (sign) {
@@ -627,14 +588,7 @@ void decrement_memory(CPU *cpu, uint16_t HL) {
   } else {
     cpu->flags.P = 0;
   }
-
-  // aux carry
-  if (set_aux_carry(result)) {
-    cpu->flags.AC = 1;
-  } else {
-    cpu->flags.AC = 0;
-  }
-  return;
+ return;
 }
 
 // TODO: it looks like this function just takes 2 values, we will need to
@@ -711,11 +665,10 @@ void decimal_adjust_accumulator(CPU *cpu) {
     cpu->flags.S = check_signed_bit(cpu->registers.A);
     cpu->flags.Z = zero(cpu->registers.A);
     cpu->flags.P = check_parity(cpu->registers.A);
-    //@@@ TODO: THIS whole function is sus as hell, 
-    //need to properly do this and see if I ddi it properly
+    //@@@ TODO: THIS whole function is sus as hell,
+    // need to properly do this and see if I ddi it properly
     cpu->flags.AC = (high_bits > 0x0F) ? 1 : 0;
   } else {
     cpu->flags.C = 0;
   }
 }
-

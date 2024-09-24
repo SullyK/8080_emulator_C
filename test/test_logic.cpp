@@ -453,29 +453,29 @@ TEST(or_immediate, Basic5) {
   ASSERT_EQ(cpu.flags.S, 1);
 }
 
-//TEST(compare_register, Basic1BigMinusSmall) {
-//  CPU cpu = {0};
-//  cpu.registers.A = 0b10000001;
-//  uint8_t example_register = 0b01010101;
-//  compare_register(&cpu, example_register);
-//  // expected value: 0b00101100
-//  ASSERT_EQ(cpu.flags.C, 0);
-//  ASSERT_EQ(cpu.flags.AC, 1);
-//  ASSERT_EQ(cpu.flags.P, 0);
-//  ASSERT_EQ(cpu.flags.Z, 0);
-//  ASSERT_EQ(cpu.flags.S, 0);
-//}
-//
-//TEST(compare_register, Basic1SmallMinusBig){
-//  CPU cpu = {0};
-//  cpu.registers.A = 0b0;
-//  uint8_t example_register = 0b11111111;
-//  compare_register(&cpu, example_register);
-//  // expected value: 0b11111110
-//  ASSERT_EQ(cpu.flags.C, 1);
-//  ASSERT_EQ(cpu.flags.AC, 1);
-//  ASSERT_EQ(cpu.flags.P, 0);
-//  ASSERT_EQ(cpu.flags.Z, 0);
-//  ASSERT_EQ(cpu.flags.S, 1);
-//}
-// 
+TEST(compare_register, Basic1BigMinusSmall) {
+  CPU cpu = {0};
+  cpu.registers.A = 0b10000001;
+  uint8_t example_register = 0b01010101;
+  compare_register(&cpu, example_register);
+  // expected value: 0b00101100
+  ASSERT_EQ(cpu.flags.C, 0);
+  ASSERT_EQ(cpu.flags.AC, 1);
+  ASSERT_EQ(cpu.flags.P, 0);
+  ASSERT_EQ(cpu.flags.Z, 0);
+  ASSERT_EQ(cpu.flags.S, 0);
+}
+
+TEST(compare_register, Basic1SmallMinusBig){
+  CPU cpu = {0};
+  cpu.registers.A = 0b0;
+  uint8_t example_register = 0b11111111;
+  compare_register(&cpu, example_register);
+  // expected value: 0b1
+  ASSERT_EQ(cpu.flags.C, 1);
+  ASSERT_EQ(cpu.flags.AC, 1);
+  ASSERT_EQ(cpu.flags.P, 0);
+  ASSERT_EQ(cpu.flags.Z, 0);
+  ASSERT_EQ(cpu.flags.S, 0);
+}
+ 

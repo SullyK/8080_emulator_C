@@ -76,6 +76,24 @@ uint8_t check_parity(uint8_t number) {
   return (counter % 2 == 0) ? 1 : 0;
 }
 
+uint8_t aux_carry_sub(uint8_t a, uint8_t b) {
+  uint8_t low_nibble_a = a & 0xF;
+  uint8_t low_nibble_b = b & 0xF;
+  return (low_nibble_a < low_nibble_b) ? 1 : 0;
+}
+
+uint8_t aux_carry_sub_with_flag(uint8_t a, uint8_t b, uint8_t carry_flag) {
+
+  uint8_t low_nibble_a = (a & 0xF);
+  if (carry_flag == 1 && low_nibble_a == 0) {
+      //underflow occured and therefore we set aux_carry
+    return 1;
+  }
+  low_nibble_a -= carry_flag;
+  uint8_t low_nibble_b = b & 0xF;
+  return (low_nibble_a < low_nibble_b) ? 1 : 0;
+}
+
 uint8_t aux_carry_add(uint8_t a, uint8_t b) {
   uint8_t detect_carry = (a & 0x0F) + (b & 0x0F);
   return detect_carry > 0x0F ? 1 : 0;

@@ -83,10 +83,11 @@ void or_immediate(CPU *cpu, uint8_t byte) {
   cpu->flags.Z = zero(cpu->registers.A);
 }
 
-//void compare_register(CPU *cpu, uint8_t reg) {
-//  cpu->flags.C = unsigned_subtract_carry_check(cpu->registers.A, reg);
-// //@@@ This is a subtract not add carry cpu->flags.AC = aux_carry_add(cpu->registers.A, reg);
-//  cpu->flags.S = check_signed_bit(result);
-//  cpu->flags.P = check_parity(result);
-//  cpu->flags.Z = zero(result);
-//}
+void compare_register(CPU *cpu, uint8_t reg) {
+  cpu->flags.C = unsigned_subtract_carry_check(cpu->registers.A, reg);
+  uint8_t result = cpu->registers.A - reg;
+  cpu->flags.AC = aux_carry_sub(cpu->registers.A, reg);
+  cpu->flags.S = check_signed_bit(result);
+  cpu->flags.P = check_parity(result);
+  cpu->flags.Z = zero(result);
+}
