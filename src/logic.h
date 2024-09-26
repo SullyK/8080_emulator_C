@@ -25,6 +25,9 @@ void or_register(CPU *cpu, uint8_t reg);
 void or_memory(CPU *cpu, uint16_t HL);
 void or_immediate(CPU *cpu, uint8_t reg);
 void compare_register(CPU *cpu, uint8_t reg);
+void compare_memory(CPU *cpu, uint16_t reg);
+void compare_immediate(CPU *cpu, uint8_t byte_two);
+void rotate_left_carry(CPU *cpu);
 #ifdef __cplusplus
 }
 #endif

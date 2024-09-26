@@ -17,7 +17,7 @@ void and_memory(CPU *cpu, uint16_t HL) {
   cpu->flags.C = 0;
   cpu->flags.S = check_signed_bit(cpu->registers.A);
   cpu->flags.P = check_parity(cpu->registers.A);
-  cpu->flags.AC = aux_carry_add(cpu->registers.A,cpu->memory[HL]);
+  cpu->flags.AC = aux_carry_add(cpu->registers.A, cpu->memory[HL]);
   cpu->flags.Z = zero(cpu->registers.A);
 }
 
@@ -90,4 +90,30 @@ void compare_register(CPU *cpu, uint8_t reg) {
   cpu->flags.S = check_signed_bit(result);
   cpu->flags.P = check_parity(result);
   cpu->flags.Z = zero(result);
+}
+
+void compare_memory(CPU *cpu, uint16_t HL) {
+  cpu->flags.C =
+      unsigned_subtract_carry_check(cpu->registers.A, cpu->memory[HL]);
+  uint8_t result = cpu->registers.A - cpu->memory[HL];
+  cpu->flags.AC = aux_carry_sub(cpu->registers.A, cpu->memory[HL]);
+  cpu->flags.S = check_signed_bit(result);
+  cpu->flags.P = check_parity(result);
+  cpu->flags.Z = zero(result);
+}
+
+void compare_immediate(CPU *cpu, uint8_t byte_two) {
+  cpu->flags.C = unsigned_subtract_carry_check(cpu->registers.A, byte_two);
+  uint8_t result = cpu->registers.A - byte_two;
+  cpu->flags.AC = aux_carry_sub(cpu->registers.A, byte_two);
+  cpu->flags.S = check_signed_bit(result);
+  cpu->flags.P = check_parity(result);
+  cpu->flags.Z = zero(result);
+}
+
+void rotate_left_carry(CPU *cpu) { 
+    uint8_t extracted_bit = cpu->registers.A >> 7;
+    cpu->registers.A = cpu->registers.A << 1; 
+    cpu->registers.A =  cpu->registers.A | extracted_bit;
+    cpu->flags.C = extracted_bit;
 }

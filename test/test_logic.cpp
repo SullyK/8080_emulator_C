@@ -453,7 +453,7 @@ TEST(or_immediate, Basic5) {
   ASSERT_EQ(cpu.flags.S, 1);
 }
 
-TEST(compare_register, Basic1BigMinusSmall) {
+TEST(compare_register, BigMinusSmall) {
   CPU cpu = {0};
   cpu.registers.A = 0b10000001;
   uint8_t example_register = 0b01010101;
@@ -466,7 +466,7 @@ TEST(compare_register, Basic1BigMinusSmall) {
   ASSERT_EQ(cpu.flags.S, 0);
 }
 
-TEST(compare_register, Basic1SmallMinusBig){
+TEST(compare_register, SmallSubtractBig) {
   CPU cpu = {0};
   cpu.registers.A = 0b0;
   uint8_t example_register = 0b11111111;
@@ -478,4 +478,148 @@ TEST(compare_register, Basic1SmallMinusBig){
   ASSERT_EQ(cpu.flags.Z, 0);
   ASSERT_EQ(cpu.flags.S, 0);
 }
+
+TEST(compare_register, AccuSameNumberAsRegister) {
+  CPU cpu = {0};
+  cpu.registers.A = 0b00001111;
+  uint8_t example_register = 0b00001111;
+  compare_register(&cpu, example_register);
+  // expected value: 0b0
+  ASSERT_EQ(cpu.flags.C, 0);
+  ASSERT_EQ(cpu.flags.AC, 0);
+  ASSERT_EQ(cpu.flags.P, 1);
+  ASSERT_EQ(cpu.flags.Z, 1);
+  ASSERT_EQ(cpu.flags.S, 0);
+}
+
+TEST(compare_memory, BigMinusSmall) {
+  CPU cpu = {0};
+  cpu.registers.A = 0x4F;
+  uint16_t HL = 0xFFAA;
+  cpu.memory[HL] = 0x0F;
+  compare_memory(&cpu, HL);
+  // expected value: 0b1000000 (64 decimal)
+  ASSERT_EQ(cpu.flags.C, 0);
+  ASSERT_EQ(cpu.flags.AC, 0);
+  ASSERT_EQ(cpu.flags.P, 0);
+  ASSERT_EQ(cpu.flags.Z, 0);
+  ASSERT_EQ(cpu.flags.S, 0);
+}
+
+TEST(compare_memory, SmallMinusBigTriggerACAndUnderflow) {
+  CPU cpu = {0};
+  cpu.registers.A = 0b00000111;
+  uint16_t HL = 0xFFAA;
+  cpu.memory[HL] = 0b00001000;
+  compare_memory(&cpu, HL);
+  // expected value: 0b11111111 (255 decimal - underflow)
+  ASSERT_EQ(cpu.flags.C, 1);
+  ASSERT_EQ(cpu.flags.AC, 1);
+  ASSERT_EQ(cpu.flags.P, 1);
+  ASSERT_EQ(cpu.flags.Z, 0);
+  ASSERT_EQ(cpu.flags.S, 1);
+}
+
+TEST(compare_memory, AccSameAsMemorySize) {
+  CPU cpu = {0};
+  cpu.registers.A = 0b11111111;
+  uint16_t HL = 0xFFAA;
+  cpu.memory[HL] = 0b11111111;
+  compare_memory(&cpu, HL);
+  // expected value: 0b0
+  ASSERT_EQ(cpu.flags.C, 0);
+  ASSERT_EQ(cpu.flags.AC, 0);
+  ASSERT_EQ(cpu.flags.P, 1);
+  ASSERT_EQ(cpu.flags.Z, 1);
+  ASSERT_EQ(cpu.flags.S, 0);
+}
+
+TEST(compare_immediate, BigMinusSmall) {
+  CPU cpu = {0};
+  cpu.registers.A = 0b10000001;
+  uint8_t example_register = 0b01010101;
+  compare_immediate(&cpu, example_register);
+  // expected value: 0b00101100
+  ASSERT_EQ(cpu.flags.C, 0);
+  ASSERT_EQ(cpu.flags.AC, 1);
+  ASSERT_EQ(cpu.flags.P, 0);
+  ASSERT_EQ(cpu.flags.Z, 0);
+  ASSERT_EQ(cpu.flags.S, 0);
+}
+
+TEST(compare_immediate, SmallSubtractBig) {
+  CPU cpu = {0};
+  cpu.registers.A = 0b00000111;
+  uint8_t example_register = 0b00001000;
+  compare_immediate(&cpu, example_register);
+  // expected value: 0b11111111 (255 - underflow)
+  ASSERT_EQ(cpu.flags.C, 1);
+  ASSERT_EQ(cpu.flags.AC, 1);
+  ASSERT_EQ(cpu.flags.P, 1);
+  ASSERT_EQ(cpu.flags.Z, 0);
+  ASSERT_EQ(cpu.flags.S, 1);
+}
+
+TEST(compare_immediate, AccuSameNumberAsRegister) {
+  CPU cpu = {0};
+  cpu.registers.A = 0b00001111;
+  uint8_t example_register = 0b00001111;
+  compare_immediate(&cpu, example_register);
+  // expected value: 0b0
+  ASSERT_EQ(cpu.flags.C, 0);
+  ASSERT_EQ(cpu.flags.AC, 0);
+  ASSERT_EQ(cpu.flags.P, 1);
+  ASSERT_EQ(cpu.flags.Z, 1);
+  ASSERT_EQ(cpu.flags.S, 0);
+}
+
+TEST(rotate_left_carry, Basic1) {
+  CPU cpu = {0};
+  cpu.registers.A = 0b10000000;
+  rotate_left_carry(&cpu);
+  ASSERT_EQ(cpu.registers.A, 0b00000001);
+  ASSERT_EQ(cpu.flags.C, 1);
+}
+
+TEST(rotate_left_carry, Basic2) {
+  CPU cpu = {0};
+  cpu.registers.A = 0b00000001;
+  rotate_left_carry(&cpu);
+  ASSERT_EQ(cpu.registers.A, 0b00000010);
+  ASSERT_EQ(cpu.flags.C, 0);
+}  
+ 
+TEST(rotate_left_carry, Basic3) {
+  CPU cpu = {0};
+  cpu.registers.A = 0b11111111;
+  rotate_left_carry(&cpu);
+  ASSERT_EQ(cpu.registers.A, 0b11111111);
+  ASSERT_EQ(cpu.flags.C, 1);
+}  
+
+TEST(rotate_left_carry, Basic4) {
+  CPU cpu = {0};
+  cpu.registers.A = 0b00000000;
+  rotate_left_carry(&cpu);
+  ASSERT_EQ(cpu.registers.A, 0b00000000);
+  ASSERT_EQ(cpu.flags.C, 0);
+}  
+ 
+TEST(rotate_left_carry, Basic5) {
+  CPU cpu = {0};
+  cpu.registers.A = 0b00111100;
+  rotate_left_carry(&cpu);
+  ASSERT_EQ(cpu.registers.A, 0b01111000);
+  ASSERT_EQ(cpu.flags.C, 0);
+}  
+ 
+ TEST(rotate_left_carry, Basic6) {
+  CPU cpu = {0};
+  cpu.registers.A = 0b01111111;
+  rotate_left_carry(&cpu);
+  ASSERT_EQ(cpu.registers.A, 0b11111110);
+  ASSERT_EQ(cpu.flags.C, 0);
+}  
+ 
+ 
  
