@@ -573,53 +573,238 @@ TEST(compare_immediate, AccuSameNumberAsRegister) {
   ASSERT_EQ(cpu.flags.S, 0);
 }
 
-TEST(rotate_left_carry, Basic1) {
+TEST(rotate_left, Basic1) {
   CPU cpu = {0};
   cpu.registers.A = 0b10000000;
-  rotate_left_carry(&cpu);
+  rotate_left(&cpu);
   ASSERT_EQ(cpu.registers.A, 0b00000001);
   ASSERT_EQ(cpu.flags.C, 1);
 }
 
-TEST(rotate_left_carry, Basic2) {
+TEST(rotate_left, Basic2) {
   CPU cpu = {0};
   cpu.registers.A = 0b00000001;
-  rotate_left_carry(&cpu);
+  rotate_left(&cpu);
   ASSERT_EQ(cpu.registers.A, 0b00000010);
   ASSERT_EQ(cpu.flags.C, 0);
-}  
- 
-TEST(rotate_left_carry, Basic3) {
+}
+
+TEST(rotate_left, Basic3) {
   CPU cpu = {0};
   cpu.registers.A = 0b11111111;
-  rotate_left_carry(&cpu);
+  rotate_left(&cpu);
   ASSERT_EQ(cpu.registers.A, 0b11111111);
   ASSERT_EQ(cpu.flags.C, 1);
-}  
+}
 
-TEST(rotate_left_carry, Basic4) {
+TEST(rotate_left, Basic4) {
   CPU cpu = {0};
+  cpu.registers.A = 0b00000000;
+  rotate_left(&cpu);
+  ASSERT_EQ(cpu.registers.A, 0b00000000);
+  ASSERT_EQ(cpu.flags.C, 0);
+}
+
+TEST(rotate_left, Basic5) {
+  CPU cpu = {0};
+  cpu.registers.A = 0b00111100;
+  rotate_left(&cpu);
+  ASSERT_EQ(cpu.registers.A, 0b01111000);
+  ASSERT_EQ(cpu.flags.C, 0);
+}
+
+TEST(rotate_left, Basic6) {
+  CPU cpu = {0};
+  cpu.registers.A = 0b01111111;
+  rotate_left(&cpu);
+  ASSERT_EQ(cpu.registers.A, 0b11111110);
+  ASSERT_EQ(cpu.flags.C, 0);
+}
+
+TEST(rotate_right, Test1) {
+  CPU cpu = {0};
+  cpu.registers.A = 0b000000001;
+  rotate_right(&cpu);
+  ASSERT_EQ(cpu.registers.A, 0b10000000);
+  ASSERT_EQ(cpu.flags.C, 1);
+}
+
+TEST(rotate_right, Test2) {
+  CPU cpu = {0};
+  cpu.registers.A = 0b011000000;
+  rotate_right(&cpu);
+  ASSERT_EQ(cpu.registers.A, 0b01100000);
+  ASSERT_EQ(cpu.flags.C, 0);
+}
+
+TEST(rotate_right, Test3) {
+  CPU cpu = {0};
+  cpu.registers.A = 0b011111111;
+  rotate_right(&cpu);
+  ASSERT_EQ(cpu.registers.A, 0b11111111);
+  ASSERT_EQ(cpu.flags.C, 1);
+}
+
+TEST(rotate_right, Test4) {
+  CPU cpu = {0};
+  cpu.registers.A = 0b00000000;
+  rotate_right(&cpu);
+  ASSERT_EQ(cpu.registers.A, 0b000000000);
+  ASSERT_EQ(cpu.flags.C, 0);
+}
+
+TEST(rotate_right, Test5) {
+  CPU cpu = {0};
+  cpu.registers.A = 0b10101010;
+  rotate_right(&cpu);
+  ASSERT_EQ(cpu.registers.A, 0b01010101);
+  ASSERT_EQ(cpu.flags.C, 0);
+}
+
+TEST(rotate_left_carry, Test1) {
+  CPU cpu = {0};
+  cpu.flags.C = 1;
+  cpu.registers.A = 0b10001001;
+  rotate_left_carry(&cpu);
+  ASSERT_EQ(cpu.registers.A, 0b00010011);
+  ASSERT_EQ(cpu.flags.C, 1);
+}
+
+TEST(rotate_left_carry, Test2) {
+  CPU cpu = {0};
+  cpu.flags.C = 0;
+  cpu.registers.A = 0b10001001;
+  rotate_left_carry(&cpu);
+  ASSERT_EQ(cpu.registers.A, 0b00010010);
+  ASSERT_EQ(cpu.flags.C, 1);
+}
+
+TEST(rotate_left_carry, Test3) {
+  CPU cpu = {0};
+  cpu.flags.C = 1;
+  cpu.registers.A = 0b00001001;
+  rotate_left_carry(&cpu);
+  ASSERT_EQ(cpu.registers.A, 0b00010011);
+  ASSERT_EQ(cpu.flags.C, 0);
+}
+
+TEST(rotate_left_carry, Test4) {
+  CPU cpu = {0};
+  cpu.flags.C = 0;
+  cpu.registers.A = 0b00001001;
+  rotate_left_carry(&cpu);
+  ASSERT_EQ(cpu.registers.A, 0b00010010);
+  ASSERT_EQ(cpu.flags.C, 0);
+}
+
+TEST(rotate_left_carry, Test5) {
+  CPU cpu = {0};
+  cpu.flags.C = 0;
   cpu.registers.A = 0b00000000;
   rotate_left_carry(&cpu);
   ASSERT_EQ(cpu.registers.A, 0b00000000);
   ASSERT_EQ(cpu.flags.C, 0);
-}  
- 
-TEST(rotate_left_carry, Basic5) {
+}
+
+TEST(rotate_left_carry, Test6) {
   CPU cpu = {0};
-  cpu.registers.A = 0b00111100;
+  cpu.flags.C = 1;
+  cpu.registers.A = 0b00000000;
   rotate_left_carry(&cpu);
-  ASSERT_EQ(cpu.registers.A, 0b01111000);
+  ASSERT_EQ(cpu.registers.A, 0b00000001);
   ASSERT_EQ(cpu.flags.C, 0);
-}  
- 
- TEST(rotate_left_carry, Basic6) {
+}
+
+TEST(rotate_right_carry, Test1) {
   CPU cpu = {0};
-  cpu.registers.A = 0b01111111;
-  rotate_left_carry(&cpu);
-  ASSERT_EQ(cpu.registers.A, 0b11111110);
+  cpu.flags.C = 1;
+  cpu.registers.A = 0b00000000;
+  rotate_right_carry(&cpu);
+  ASSERT_EQ(cpu.registers.A, 0b10000000);
   ASSERT_EQ(cpu.flags.C, 0);
-}  
- 
- 
- 
+}
+
+TEST(rotate_right_carry, Test2) {
+  CPU cpu = {0};
+  cpu.flags.C = 0;
+  cpu.registers.A = 0b00000001;
+  rotate_right_carry(&cpu);
+  ASSERT_EQ(cpu.registers.A, 0b00000000);
+  ASSERT_EQ(cpu.flags.C, 1);
+}
+
+TEST(rotate_right_carry, Test3) {
+  CPU cpu = {0};
+  cpu.flags.C = 1;
+  cpu.registers.A = 0b00000001;
+  rotate_right_carry(&cpu);
+  ASSERT_EQ(cpu.registers.A, 0b10000000);
+  ASSERT_EQ(cpu.flags.C, 1);
+}
+
+TEST(rotate_right_carry, Test4) {
+  CPU cpu = {0};
+  cpu.flags.C = 1;
+  cpu.registers.A = 0b10000000;
+  rotate_right_carry(&cpu);
+  ASSERT_EQ(cpu.registers.A, 0b11000000);
+  ASSERT_EQ(cpu.flags.C, 0);
+}
+
+TEST(rotate_right_carry, Test5) {
+  CPU cpu = {0};
+  cpu.flags.C = 0;
+  cpu.registers.A = 0b10000000;
+  rotate_right_carry(&cpu);
+  ASSERT_EQ(cpu.registers.A, 0b01000000);
+  ASSERT_EQ(cpu.flags.C, 0);
+}
+
+TEST(comp_acc, Test1) {
+  CPU cpu = {0};
+  cpu.registers.A = 0b11111111;
+  complement_accumulator(&cpu);
+  ASSERT_EQ(cpu.registers.A, 0b00000000);
+}
+
+TEST(comp_acc, Test2) {
+  CPU cpu = {0};
+  cpu.registers.A = 0b11111111;
+  complement_accumulator(&cpu);
+  ASSERT_EQ(cpu.registers.A, 0b00000000);
+}
+
+TEST(comp_acc, Test3) {
+  CPU cpu = {0};
+  cpu.registers.A = 0b01010101;
+  complement_accumulator(&cpu);
+  ASSERT_EQ(cpu.registers.A, 0b10101010);
+}
+
+TEST(comp_carry, Test1) {
+  CPU cpu = {0};
+  cpu.flags.C = 1;
+  complement_carry(&cpu);
+  ASSERT_EQ(cpu.flags.C, 0);
+}
+
+TEST(comp_carry, Test2) {
+  CPU cpu = {0};
+  cpu.flags.C = 0;
+  complement_carry(&cpu);
+  ASSERT_EQ(cpu.flags.C, 1);
+}
+
+TEST(set_carry, Test1) {
+  CPU cpu = {0};
+  cpu.flags.C = 0;
+  set_carry(&cpu);
+  ASSERT_EQ(cpu.flags.C, 1);
+}
+
+TEST(set_carry, Test2) {
+  CPU cpu = {0};
+  cpu.flags.C = 1;
+  set_carry(&cpu);
+  ASSERT_EQ(cpu.flags.C, 1);
+}

@@ -111,9 +111,42 @@ void compare_immediate(CPU *cpu, uint8_t byte_two) {
   cpu->flags.Z = zero(result);
 }
 
-void rotate_left_carry(CPU *cpu) { 
-    uint8_t extracted_bit = cpu->registers.A >> 7;
-    cpu->registers.A = cpu->registers.A << 1; 
-    cpu->registers.A =  cpu->registers.A | extracted_bit;
-    cpu->flags.C = extracted_bit;
+void rotate_left(CPU *cpu) {
+  uint8_t extracted_bit = cpu->registers.A >> 7 & 0x01;
+  cpu->registers.A = cpu->registers.A << 1;
+  cpu->registers.A = cpu->registers.A | extracted_bit;
+  cpu->flags.C = extracted_bit;
+}
+
+void rotate_right(CPU *cpu) {
+  uint8_t extracted_bit = cpu->registers.A & 0x1;
+  cpu->registers.A = cpu->registers.A >> 1;
+  cpu->registers.A = cpu->registers.A | (extracted_bit << 7);
+  cpu->flags.C = extracted_bit;
+}
+
+void rotate_left_carry(CPU *cpu) {
+  uint8_t extracted_bit = cpu->registers.A >> 7 & 0x01;
+  cpu->registers.A = cpu->registers.A << 1;
+  cpu->registers.A = cpu->registers.A | cpu->flags.C;
+  cpu->flags.C = extracted_bit;
+}
+
+void rotate_right_carry(CPU *cpu) {
+  uint8_t extracted_bit = cpu->registers.A & 0x01;
+  cpu->registers.A = cpu->registers.A >> 1;
+  cpu->registers.A = cpu->registers.A | (cpu->flags.C << 7);
+  cpu->flags.C = extracted_bit;
+}
+
+void complement_accumulator(CPU *cpu) {
+    cpu->registers.A = ~(cpu->registers.A);
+}
+
+void complement_carry(CPU *cpu) {
+    cpu->flags.C = ~(cpu->flags.C);
+}
+
+void set_carry(CPU *cpu) {
+    cpu->flags.C = 1;
 }
