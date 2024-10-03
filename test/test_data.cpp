@@ -123,10 +123,73 @@ TEST(load_acc_direct, test_1) {
   CPU cpu = {0};
   uint8_t byte_three = 0b11111111;
   uint8_t byte_two = 0b00000000;
-  int16_t cpu.registers.A = 20;
+  cpu.registers.A = 20;
   uint16_t combined = combine_registers(byte_three, byte_two);
   cpu.memory[combined] = 177;
   load_acc_direct(&cpu, byte_three, byte_two);
   ASSERT_EQ(cpu.registers.A, 177);
 }
 
+TEST(load_h_l_direct, test_1) {
+  CPU cpu = {0};
+  uint8_t byte_three = 0b11111111; // 0xFF
+  uint8_t byte_two = 0b00000000;   // 0x00
+  cpu.registers.A = 20;
+  uint16_t combined = combine_registers(byte_three, byte_two); // 0xFF00
+  ASSERT_EQ(combined, 0xFF00);
+  cpu.memory[combined] = 40;
+  cpu.memory[combined + 1] = 111;
+  load_h_l_direct(&cpu, byte_three, byte_two);
+  ASSERT_EQ(cpu.registers.L, 40);
+  ASSERT_EQ(cpu.registers.H, 111);
+}
+
+TEST(store_h_l_direct, test_1) {
+  CPU cpu = {0};
+  uint8_t byte_three = 0b11111111; // 0xFF
+  uint8_t byte_two = 0b00000000;   // 0x00
+  cpu.registers.L = 99;
+  cpu.registers.L = 200;
+  uint16_t combined = combine_registers(byte_three, byte_two); // 0xFF00
+  ASSERT_EQ(combined, 0xFF00);
+  cpu.memory[combined] = 40;
+  cpu.memory[combined + 1] = 111;
+  store_h_l_direct(&cpu, byte_three, byte_two);
+  ASSERT_EQ(cpu.registers.L, 99);
+  ASSERT_EQ(cpu.registers.H, 200);
+}
+
+TEST(load_acc_indirect, test_1) {
+  CPU cpu = {0};
+  uint16_t rp_value = 39400;
+  cpu.memory[rp_value] = 222;
+  cpu.registers.A = 1;
+  load_acc_indirect(&cpu, rp_value);
+  ASSERT_EQ(cpu.registers.A, 222);
+  ASSERT_EQ(rp_value, 39400);
+}
+
+TEST(store_acc_indirect, test_1) {
+  CPU cpu = {0};
+  uint16_t rp_value = 39400;
+  cpu.memory[rp_value] = 222;
+  cpu.registers.A = 1;
+  store_acc_indirect(&cpu, rp_value);
+  ASSERT_EQ(cpu.registers.A, 1);
+  ASSERT_EQ(rp_value, 39400);
+}
+
+TEST(exchange_hl_with_de, test_1) {
+  CPU cpu = {0};
+  cpu.registers.H = 222;
+  cpu.registers.L = 111;
+
+  cpu.registers.D = 100;
+  cpu.registers.E = 200;
+  exchange_hl_with_de(&cpu);
+  ASSERT_EQ(cpu.registers.H, 100);
+  ASSERT_EQ(cpu.registers.L, 200);
+
+  ASSERT_EQ(cpu.registers.D, 222);
+  ASSERT_EQ(cpu.registers.E, 111);
+}

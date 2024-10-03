@@ -17,8 +17,12 @@ void move_immediate_to_memory(CPU *cpu, uint8_t src, uint16_t dest);
 void load_reg_pair_immed(uint8_t reg_high, uint8_t low,
                          uint16_t *register_pair);
 void load_acc_direct(CPU *cpu, uint8_t reg_high, uint8_t reg_low);
-// check the tests on ^^^(above) and the
-// prototype and continue from here
+void load_h_l_direct(CPU *cpu, uint8_t reg_high, uint8_t reg_low);
+void store_h_l_direct(CPU *cpu, uint8_t reg_high, uint8_t reg_low);
+void load_acc_indirect(CPU *cpu, uint16_t register_pair);
+void store_acc_indirect(CPU *cpu, uint16_t register_pair);
+void exchange_hl_with_de(CPU *cpu);
+
 #ifdef __cplusplus
 }
 #endif
