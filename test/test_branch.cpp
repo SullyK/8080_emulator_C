@@ -268,7 +268,7 @@ TEST(conditional_call, ZJmpZ0) {
 }
 
 //-------
- 
+
 TEST(conditional_call, NCJmpC1) {
   CPU cpu = {0};
   cpu.flags.C = 1;
@@ -333,139 +333,196 @@ TEST(conditional_call, CJmpC0) {
   ASSERT_PC(cpu.PC, 0x0402);
 }
 
- 
- //-------
-  
- TEST(conditional_call, POJmpP1) {
-   CPU cpu = {0};
-   cpu.flags.P = 1;
-   cpu.SP = 1000;
-   cpu.PC = 0x0402;
-   cpu.memory[SP - 1] = 0xAA; // 999
-   cpu.memory[SP - 2] = 0xBB; // 998
-   uint8_t byte_two = 0xCC;
-   uint8_t byte_three = 0x7A;
-   conditional_call(&cpu, byte_two, byte_three, 4);
-   ASSERT_EQ(cpu.memory[999], 0xAA);
-   ASSERT_EQ(cpu.memory[998], 0xBB);
-   ASSERT_EQ(cpu.SP, 1000);
-   ASSERT_PC(cpu.PC, 0x0402);
- }
+//-------
 
- TEST(conditional_call, POJmpP0) {
-   CPU cpu = {0};
-   cpu.flags.P = 0;
-   cpu.SP = 1000;
-   cpu.PC = 0x0402;
-   cpu.memory[SP - 1] = 0xAA; // 999
-   cpu.memory[SP - 2] = 0xBB; // 998
-   uint8_t byte_two = 0xCC;
-   uint8_t byte_three = 0x7A;
-   conditional_call(&cpu, byte_two, byte_three, 4);
-   ASSERT_EQ(cpu.memory[999], 0x04);
-   ASSERT_EQ(cpu.memory[998], 0x02);
-   ASSERT_EQ(cpu.SP, 998);
-   ASSERT_PC(cpu.PC, 0x7ACC);
- }
+TEST(conditional_call, POJmpP1) {
+  CPU cpu = {0};
+  cpu.flags.P = 1;
+  cpu.SP = 1000;
+  cpu.PC = 0x0402;
+  cpu.memory[SP - 1] = 0xAA; // 999
+  cpu.memory[SP - 2] = 0xBB; // 998
+  uint8_t byte_two = 0xCC;
+  uint8_t byte_three = 0x7A;
+  conditional_call(&cpu, byte_two, byte_three, 4);
+  ASSERT_EQ(cpu.memory[999], 0xAA);
+  ASSERT_EQ(cpu.memory[998], 0xBB);
+  ASSERT_EQ(cpu.SP, 1000);
+  ASSERT_PC(cpu.PC, 0x0402);
+}
 
- TEST(conditional_call, PEjmpP1) {
-   CPU cpu = {0};
-   cpu.flags.P = 1;
-   cpu.SP = 1000;
-   cpu.PC = 0x0402;
-   cpu.memory[SP - 1] = 0xAA; // 999
-   cpu.memory[SP - 2] = 0xBB; // 998
-   uint8_t byte_two = 0xCC;
-   uint8_t byte_three = 0x7A;
-   conditional_call(&cpu, byte_two, byte_three, 5);
-   ASSERT_EQ(cpu.memory[999], 0x04);
-   ASSERT_EQ(cpu.memory[998], 0x02);
-   ASSERT_EQ(cpu.SP, 998);
-   ASSERT_PC(cpu.PC, 0x7ACC);
- }
+TEST(conditional_call, POJmpP0) {
+  CPU cpu = {0};
+  cpu.flags.P = 0;
+  cpu.SP = 1000;
+  cpu.PC = 0x0402;
+  cpu.memory[SP - 1] = 0xAA; // 999
+  cpu.memory[SP - 2] = 0xBB; // 998
+  uint8_t byte_two = 0xCC;
+  uint8_t byte_three = 0x7A;
+  conditional_call(&cpu, byte_two, byte_three, 4);
+  ASSERT_EQ(cpu.memory[999], 0x04);
+  ASSERT_EQ(cpu.memory[998], 0x02);
+  ASSERT_EQ(cpu.SP, 998);
+  ASSERT_PC(cpu.PC, 0x7ACC);
+}
+
+TEST(conditional_call, PEjmpP1) {
+  CPU cpu = {0};
+  cpu.flags.P = 1;
+  cpu.SP = 1000;
+  cpu.PC = 0x0402;
+  cpu.memory[SP - 1] = 0xAA; // 999
+  cpu.memory[SP - 2] = 0xBB; // 998
+  uint8_t byte_two = 0xCC;
+  uint8_t byte_three = 0x7A;
+  conditional_call(&cpu, byte_two, byte_three, 5);
+  ASSERT_EQ(cpu.memory[999], 0x04);
+  ASSERT_EQ(cpu.memory[998], 0x02);
+  ASSERT_EQ(cpu.SP, 998);
+  ASSERT_PC(cpu.PC, 0x7ACC);
+}
 
 TEST(conditional_call, PEJmpP0) {
-    CPU cpu = {0};
-    cpu.flags.P = 0;
-    cpu.SP = 1000;
-    cpu.PC = 0x0402;
-    cpu.memory[SP - 1] = 0xAA; // 999
-    cpu.memory[SP - 2] = 0xBB; // 998
-    uint8_t byte_two = 0xCC;
-    uint8_t byte_three = 0x7A;
-    conditional_call(&cpu, byte_two, byte_three, 5);
-   ASSERT_EQ(cpu.memory[999], 0xAA);
-   ASSERT_EQ(cpu.memory[998], 0xBB);
-   ASSERT_EQ(cpu.SP, 1000);
-   ASSERT_PC(cpu.PC, 0x0402);
- }
+  CPU cpu = {0};
+  cpu.flags.P = 0;
+  cpu.SP = 1000;
+  cpu.PC = 0x0402;
+  cpu.memory[SP - 1] = 0xAA; // 999
+  cpu.memory[SP - 2] = 0xBB; // 998
+  uint8_t byte_two = 0xCC;
+  uint8_t byte_three = 0x7A;
+  conditional_call(&cpu, byte_two, byte_three, 5);
+  ASSERT_EQ(cpu.memory[999], 0xAA);
+  ASSERT_EQ(cpu.memory[998], 0xBB);
+  ASSERT_EQ(cpu.SP, 1000);
+  ASSERT_PC(cpu.PC, 0x0402);
+}
 
- 
- 
- //-------
-  
- TEST(conditional_call, PJmpS1) {
-   CPU cpu = {0};
-   cpu.flags.S = 1;
-   cpu.SP = 1000;
-   cpu.PC = 0x0402;
-   cpu.memory[SP - 1] = 0xAA; // 999
-   cpu.memory[SP - 2] = 0xBB; // 998
-   uint8_t byte_two = 0xCC;
-   uint8_t byte_three = 0x7A;
-   conditional_call(&cpu, byte_two, byte_three, 6);
-   ASSERT_EQ(cpu.memory[999], 0xAA);
-   ASSERT_EQ(cpu.memory[998], 0xBB);
-   ASSERT_EQ(cpu.SP, 1000);
-   ASSERT_PC(cpu.PC, 0x0402);
- }
+//-------
 
- TEST(conditional_call, PJmpS0) {
-   CPU cpu = {0};
-   cpu.flags.S = 0;
-   cpu.SP = 1000;
-   cpu.PC = 0x0402;
-   cpu.memory[SP - 1] = 0xAA; // 999
-   cpu.memory[SP - 2] = 0xBB; // 998
-   uint8_t byte_two = 0xCC;
-   uint8_t byte_three = 0x7A;
-   conditional_call(&cpu, byte_two, byte_three, 6);
-   ASSERT_EQ(cpu.memory[999], 0x04);
-   ASSERT_EQ(cpu.memory[998], 0x02);
-   ASSERT_EQ(cpu.SP, 998);
-   ASSERT_PC(cpu.PC, 0x7ACC);
- }
+TEST(conditional_call, PJmpS1) {
+  CPU cpu = {0};
+  cpu.flags.S = 1;
+  cpu.SP = 1000;
+  cpu.PC = 0x0402;
+  cpu.memory[SP - 1] = 0xAA; // 999
+  cpu.memory[SP - 2] = 0xBB; // 998
+  uint8_t byte_two = 0xCC;
+  uint8_t byte_three = 0x7A;
+  conditional_call(&cpu, byte_two, byte_three, 6);
+  ASSERT_EQ(cpu.memory[999], 0xAA);
+  ASSERT_EQ(cpu.memory[998], 0xBB);
+  ASSERT_EQ(cpu.SP, 1000);
+  ASSERT_PC(cpu.PC, 0x0402);
+}
 
- TEST(conditional_call, MjmpS1) {
-   CPU cpu = {0};
-   cpu.flags.S = 1;
-   cpu.SP = 1000;
-   cpu.PC = 0x0402;
-   cpu.memory[SP - 1] = 0xAA; // 999
-   cpu.memory[SP - 2] = 0xBB; // 998
-   uint8_t byte_two = 0xCC;
-   uint8_t byte_three = 0x7A;
-   conditional_call(&cpu, byte_two, byte_three, 7);
-   ASSERT_EQ(cpu.memory[999], 0x04);
-   ASSERT_EQ(cpu.memory[998], 0x02);
-   ASSERT_EQ(cpu.SP, 998);
-   ASSERT_PC(cpu.PC, 0x7ACC);
- }
+TEST(conditional_call, PJmpS0) {
+  CPU cpu = {0};
+  cpu.flags.S = 0;
+  cpu.SP = 1000;
+  cpu.PC = 0x0402;
+  cpu.memory[SP - 1] = 0xAA; // 999
+  cpu.memory[SP - 2] = 0xBB; // 998
+  uint8_t byte_two = 0xCC;
+  uint8_t byte_three = 0x7A;
+  conditional_call(&cpu, byte_two, byte_three, 6);
+  ASSERT_EQ(cpu.memory[999], 0x04);
+  ASSERT_EQ(cpu.memory[998], 0x02);
+  ASSERT_EQ(cpu.SP, 998);
+  ASSERT_PC(cpu.PC, 0x7ACC);
+}
+
+TEST(conditional_call, MjmpS1) {
+  CPU cpu = {0};
+  cpu.flags.S = 1;
+  cpu.SP = 1000;
+  cpu.PC = 0x0402;
+  cpu.memory[SP - 1] = 0xAA; // 999
+  cpu.memory[SP - 2] = 0xBB; // 998
+  uint8_t byte_two = 0xCC;
+  uint8_t byte_three = 0x7A;
+  conditional_call(&cpu, byte_two, byte_three, 7);
+  ASSERT_EQ(cpu.memory[999], 0x04);
+  ASSERT_EQ(cpu.memory[998], 0x02);
+  ASSERT_EQ(cpu.SP, 998);
+  ASSERT_PC(cpu.PC, 0x7ACC);
+}
 
 TEST(conditional_call, MJmpS0) {
-    CPU cpu = {0};
-    cpu.flags.S = 0;
-    cpu.SP = 1000;
-    cpu.PC = 0x0402;
-    cpu.memory[SP - 1] = 0xAA; // 999
-    cpu.memory[SP - 2] = 0xBB; // 998
-    uint8_t byte_two = 0xCC;
-    uint8_t byte_three = 0x7A;
-    conditional_call(&cpu, byte_two, byte_three, 7);
-   ASSERT_EQ(cpu.memory[999], 0xAA);
-   ASSERT_EQ(cpu.memory[998], 0xBB);
-   ASSERT_EQ(cpu.SP, 1000);
-   ASSERT_PC(cpu.PC, 0x0402);
- }
+  CPU cpu = {0};
+  cpu.flags.S = 0;
+  cpu.SP = 1000;
+  cpu.PC = 0x0402;
+  cpu.memory[SP - 1] = 0xAA; // 999
+  cpu.memory[SP - 2] = 0xBB; // 998
+  uint8_t byte_two = 0xCC;
+  uint8_t byte_three = 0x7A;
+  conditional_call(&cpu, byte_two, byte_three, 7);
+  ASSERT_EQ(cpu.memory[999], 0xAA);
+  ASSERT_EQ(cpu.memory[998], 0xBB);
+  ASSERT_EQ(cpu.SP, 1000);
+  ASSERT_EQ(cpu.PC, 0x0402);
+}
 
-  
+TEST(branch_return, test1) {
+  CPU cpu = {0};
+  cpu.SP = 1000;
+  cpu.memory[SP] = 0xAF;
+  cpu.memory[SP + 1] = 0x22;
+  cpu.PC = 0xFFFF;
+  branch_return(&cpu);
+  ASSERT_EQ(cpu.PC, 0x22AF);
+  ASSERT_EQ(cpu.SP, 1002);
+}
+
+struct ConditionalBranchTestParams {
+  uint8_t S_value;
+  uint8_t Z_value;
+  uint8_t P_value;
+  uint8_t C_value;
+
+  uint8_t SP_value;
+  uint8_t PC_value;
+  uint8_t memory_1;
+  uint8_t memory_2;
+
+  uint8_t PC_assert_value;
+  uint8_t SP_assert_value;
+  uint8_t condition;
+};
+
+class ConditionalBranchReturnTests
+    : public ::testing::TestWithParam<ConditionalBranchTestParams> {
+protected:
+  CPU cpu;
+
+  void SetUp() override {
+    cpu = {0};
+
+    auto param = GetParam();
+    cpu.memory[param.SP_value] = param.memory_1;
+    cpu.memory[param.SP_value + 1] = param.memory_2;
+    cpu.flags.S = param.S_value;
+    cpu.flags.Z = param.Z_value;
+    cpu.flags.P = param.P_value;
+    cpu.flags.C = param.C_value;
+    condition = param.condition;
+    cpu.SP = param.SP_value;
+    cpu.PC = param.PC_value;
+  }
+};
+INSTANTIATE_TEST_SUITE_P(
+    ConditionalBranchReturnTestsCases, // Name of the test suite
+    ConditionalBranchReturnTests,       // Test suite class
+    ::testing::Values(
+        ConditionalBranchTestParams{0, 0, 0, 0, 500, 0xFFFF, 0xAF, 0x22, 0xAF22, 502, 0},
+        ConditionalBranchTestParams{0, 1, 0, 0, 500, 0xFFFF, 0xAF, 0x22, 0xFFFF, 500, 0},
+        ConditionalBranchTestParams{0, 1, 0, 0, 500, 0xFFFF, 0xAF, 0x22, 0xFFFF, 500, 1},
+        ConditionalBranchTestParams{0, 0, 0, 0, 500, 0xFFFF, 0xAF, 0x22, 0xAF22, 502, 1},
+        ConditionalBranchTestParams{0, 0, 0, 0, 500, 0xFFFF, 0xAF, 0x22, 0xAF22, 502, 2},
+        ConditionalBranchTestParams{0, 0, 0, 1, 500, 0xFFFF, 0xAF, 0x22, 0xFFFF, 500, 2},
+        ConditionalBranchTestParams{0, 0, 0, 1, 500, 0xFFFF, 0xAF, 0x22, 0xFFFF, 500, 3},
+        ConditionalBranchTestParams{0, 0, 0, 0, 500, 0xFFFF, 0xAF, 0x22, 0xAF22, 502, 3}
+    )
+);
