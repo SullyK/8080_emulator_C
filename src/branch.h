@@ -9,12 +9,15 @@
 extern "C" {
 #endif
 // insert functions here
-//void jmp_addr(CPU *cpu, int high_byte, int low_byte);
-//void conditional_jump(CPU *cpu, int high_byte, int low_byte, condition);
-//void call_addr(CPU *cpu, int high_byte, int low_byte);
-//void conditional_call(CPU *cpu, int high_byte, int low_byte);
-//void branch_return(CPU *cpu);
+// void jmp_addr(CPU *cpu, int high_byte, int low_byte);
+// void conditional_jump(CPU *cpu, int high_byte, int low_byte, condition);
+// void call_addr(CPU *cpu, int high_byte, int low_byte);
+// void conditional_call(CPU *cpu, int high_byte, int low_byte);
+// void branch_return(CPU *cpu);
 void conditional_branch_return(CPU *cpu, uint8_t condition);
+
+// void restart(CPU *cpu, uint8_t n_value);
+void PCHL(CPU *cpu, uint8_t high_reg, uint8_t low_reg);
 
 // NZ - not zero (Z = 0)  - 0
 // Z - zero (Z = 1) - 1

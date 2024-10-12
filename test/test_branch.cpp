@@ -475,7 +475,7 @@
 //  ASSERT_EQ(cpu.PC, 0x22AF);
 //  ASSERT_EQ(cpu.SP, 1002);
 //}
-//
+
 struct ConditionalBranchTestParams {
 
   uint8_t Z_value;
@@ -572,3 +572,60 @@ INSTANTIATE_TEST_SUITE_P(
         // below test - minus, , s=1, condition met
         ConditionalBranchTestParams{0, 0, 0, 1, 500, 0xFFFF, 0xAF, 0x22, 0x22AF,
                                     502, 7}));
+// above = conditional return
+// ----------------------------------------
+//
+// TEST(restart, test1) {
+//  CPU cpu = {0};
+//  cpu.SP = 5555;
+//  cpu.PC = 0xA24F;
+//  cpu.memory[cpu.SP - 1] = 0xFF;
+//  cpu.memory[cpu.SP - 2] = 0xFF;
+//  uint8_t n_value = 2;
+//  // make sure these above numbers are changed for mem
+//  restart(&cpu, n_value);
+//  ASSERT_EQ(cpu.memory[5553], 0x4F);     // low_byte
+//  ASSERT_EQ(cpu.memory[5553 + 1], 0xA2); // high_byte
+//  ASSERT_EQ(cpu.SP, 5553);
+//  ASSERT_EQ(cpu.PC, 16); // 0x10
+//}
+//
+// TEST(restart, lowest_sp) {
+//  CPU cpu = {0};
+//  cpu.SP = 2;
+//  cpu.PC = 0x1234;
+//  cpu.memory[cpu.SP - 1] = 0xff;
+//  cpu.memory[cpu.SP - 2] = 0xff;
+//  uint8_t n_value = 7;
+//  // make sure these above numbers are changed for mem
+//  restart(&cpu, n_value);
+//  ASSERT_EQ(cpu.memory[0], 0x34);     // low_byte
+//  ASSERT_EQ(cpu.memory[0 + 1], 0x12); // high_byte
+//  ASSERT_EQ(cpu.SP, 0);
+//  ASSERT_EQ(cpu.PC, (7 * 8)); // *8 for n_value restart
+//                              // from rsrt instruction
+//}
+//
+// TEST(restart, highest_sp) {
+//  CPU cpu = {0};
+//  cpu.SP = 0xFFFF;
+//  cpu.PC = 0xABCD;
+//  cpu.memory[cpu.SP - 1] = 0xAA;
+//  cpu.memory[cpu.SP - 2] = 0xBB;
+//  uint8_t n_value = 6;
+//
+//  restart(&cpu, n_value);
+//  ASSERT_EQ(cpu.memory[0xFFFF - 2], 0xCD);
+//  ASSERT_EQ(cpu.memory[0xFFFF - 1], 0xAB);
+//
+//  ASSERT_EQ(cpu.SP, 0xFFFF - 2);
+//  ASSERT_EQ(cpu.PC, (n_value * 8));
+//}
+//TEST(PCHL, test1) {
+//  CPU cpu = {0};
+//  cpu.PC = 0xFFFF;
+//  cpu.registers.B = 0xAA; // high byte
+//  cpu.registers.C = 0xBB; // low byte
+//  PCHL(&cpu, cpu.registers.B, cpu.registers.C);
+//  ASSERT_EQ(cpu.PC, 0xAABB);
+//}
