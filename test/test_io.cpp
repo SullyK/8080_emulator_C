@@ -97,3 +97,31 @@ TEST(pop_psw, test2){
     ASSERT_EQ(cpu.flags.P, 1);
     ASSERT_EQ(cpu.flags.AC, 1);
 }
+
+ 
+TEST(XTHL, test1){
+    CPU cpu = {0};
+    cpu.SP = 19;
+    cpu.memory[19] = 0xBB;
+    cpu.memory[20] = 0xAA;
+    cpu.registers.L = 0xC1;
+    cpu.registers.H = 0xD7;
+    XTHL(&cpu);
+    ASSERT_EQ(cpu.SP, 19);
+    ASSERT_EQ(cpu.memory[cpu.SP], 0xC1);
+    ASSERT_EQ(cpu.registers.L, 0xBB);
+    ASSERT_EQ(cpu.memory[cpu.SP + 1], 0xD7);
+    ASSERT_EQ(cpu.registers.H, 0xAA);
+}    
+
+
+
+ 
+TEST(SPHL, test1){
+    CPU cpu = {0};
+    cpu.SP = 0xFFFF;
+    cpu.registers.L = 0xC1;
+    cpu.registers.H = 0xD7;
+    SPHL(&cpu);
+    ASSERT_EQ(cpu.SP, 0xD7C1);
+}    

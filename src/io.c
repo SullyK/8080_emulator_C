@@ -32,4 +32,32 @@ void pop_psw(CPU *cpu){
     cpu->SP += 2;
 }
 
+void XTHL(CPU *cpu){
+    uint8_t temp = cpu->registers.L;
+    cpu->registers.L = cpu->memory[cpu->SP];
+    cpu->memory[cpu->SP] = temp;
+    
+    temp = cpu->registers.H;
+    cpu->registers.H = cpu->memory[cpu->SP + 1];
+    cpu->memory[cpu->SP + 1] = temp;
+}
+
+
+void SPHL(CPU *cpu){
+    cpu->SP = (cpu->registers.H << 8) | cpu->registers.L;
+}
+
+//@@@TODO: IMPLEMENT I/O -- I Might need to put this into an external file and deal with IO on a
+//specific basis for the space invaders emulator
+//Q: do I need an array of IO ports?
+//void  in_port(CPU *cpu, uint8_t data){
+//    cpu->registers.A = data;
+//}
+//
+ //@@@TODO: IMPLEMENT I/O
+//void  out_port(CPU *cpu, uint8_t *data){
+ //   *data = cpu->registers.A;
+//}
+ 
+
 

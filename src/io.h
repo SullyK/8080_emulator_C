@@ -14,6 +14,8 @@ void push_rp(CPU *cpu, uint16_t rp);
 void push_psw(CPU *cpu);
 void pop_rp(CPU *cpu, uint16_t *rp);
 void pop_psw(CPU *cpu);
+void XTHL(CPU *cpu);
+void SPHL(CPU *cpu);
 #ifdef __cplusplus
 }
 #endif
