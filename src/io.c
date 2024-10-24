@@ -45,6 +45,7 @@ void SPHL(CPU *cpu) { cpu->SP = (cpu->registers.H << 8) | cpu->registers.L; }
 // MACHINE SPECIFIC - to the ARCADE MACHINE that runs SPACE INVADERS
 // this can defo be optimised better
 // I believe only 4 ports are used here,0,1,2 and 3-shift reg
+//@@@!!!TODO: Not tested
 void in_port(CPU *cpu, uint8_t port) {
   if (port == 3) {
     // do some shift-register reading here - I think...
@@ -55,6 +56,7 @@ void in_port(CPU *cpu, uint8_t port) {
   }
 }
 
+//@@@!!!TODO: Not tested
 void out_port(CPU *cpu, uint8_t port) {
   if (port == 2) {
     cpu->shift_offset = cpu->registers.A & 0x07;
@@ -72,14 +74,14 @@ void DI(CPU *cpu) {
   cpu->int_pending = false;
 }
 
-void HLT() {
+void HLT(void) {
   printf("This should never execute at least for my purpose");
   exit(-1);
 }
 
 //@@@ TODO: See if this will be optimised out
 // need to add cycle count so it WILL be necessary
-void NOP() {}
+void NOP(void) {}
 
 //@@@!!!TODO: MOVE THIS LATER - to interrupt.C?
 //

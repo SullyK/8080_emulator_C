@@ -39,7 +39,8 @@ typedef struct CPU {
   uint8_t shift_offset;
   uint8_t shift_low;
   uint8_t shift_high;
-  uint8_t in_ports[8];
+  uint8_t in_ports[8]; //I don't know if this is necessary yet, might need to keep it for
+		       //keybord in to write to it
 } CPU;
 
 #ifdef _cplusplus

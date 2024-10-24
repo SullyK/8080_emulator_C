@@ -9,17 +9,16 @@
 extern "C" {
 #endif
 // insert functions here
-void jmp_addr(CPU *cpu, int high_byte, int low_byte);
-void conditional_jump(CPU *cpu, int high_byte, int low_byte, uint8_t condition);
-void call_addr(CPU *cpu, int high_byte, int low_byte);
+void jmp_addr(CPU *cpu, int high_byte, int low_byte); // JMP addr
+void conditional_jump(CPU *cpu, int high_byte, int low_byte, uint8_t condition); // Jcondition addr
+void call_addr(CPU *cpu, int high_byte, int low_byte); // CALL addr
 //@@@!!!TODO: MAJOR PAIN-POINT IN MAIN - Will constantly need to check these
 //functions so I need to ensure these are conistent so I don't mess up later.
-void conditional_call(CPU *cpu, int high_byte, int low_byte, uint8_t condition);
-void branch_return(CPU *cpu);
-void conditional_branch_return(CPU *cpu, uint8_t condition);
-
-void restart(CPU *cpu, uint8_t n_value);
-void PCHL(CPU *cpu);
+void conditional_call(CPU *cpu, int high_byte, int low_byte, uint8_t condition); // Cconditional addr
+void branch_return(CPU *cpu); // RET
+void conditional_branch_return(CPU *cpu, uint8_t condition); //Rcondition
+void restart(CPU *cpu, uint8_t n_value); //RST n
+void PCHL(CPU *cpu); //PCHL
 
 // NZ - not zero (Z = 0)  - 0
 // Z - zero (Z = 1) - 1

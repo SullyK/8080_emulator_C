@@ -21,3 +21,5 @@ googletest/*~
 todo.txt
 test.py
 rotate.py
+*invaders.rom
+src/invaders.rom

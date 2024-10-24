@@ -5,7 +5,7 @@
 // TODO: this is pretty much exactly the same func as the add reg, I will remove
 // these two and make and similar one but for now its seperate for simplicity
 // skipped testing for this reason
-void add_data(CPU *cpu, uint8_t byte_two) {
+void add_data(CPU *cpu, uint8_t byte_two) { //ADI data
 
   uint8_t result = cpu->registers.A + byte_two;
   cpu->flags.AC = aux_carry_sub(cpu->registers.A, byte_two);
@@ -47,8 +47,7 @@ void add_data(CPU *cpu, uint8_t byte_two) {
   return;
 }
 
-void add_register(CPU *cpu, uint8_t reg_value) {
-
+void add_register(CPU *cpu, uint8_t reg_value) { //ADD r
   uint8_t result = cpu->registers.A + reg_value;
 
   cpu->flags.AC = aux_carry_add(cpu->registers.A, reg_value);
@@ -92,7 +91,7 @@ void add_register(CPU *cpu, uint8_t reg_value) {
 
 // TODO: Write a helper function which takes in two 8 bit registers and make its
 // a 16 bit, and make unit tests
-void add_memory(CPU *cpu, uint16_t HL) {
+void add_memory(CPU *cpu, uint16_t HL) { // ADD M
 
   uint8_t carry = unsigned_addition_carry_check(
       cpu->registers.A, cpu->memory[HL]); // TODO: I can
@@ -134,7 +133,7 @@ void add_memory(CPU *cpu, uint16_t HL) {
   return;
 }
 
-void add_register_carry(CPU *cpu, uint8_t reg_value) {
+void add_register_carry(CPU *cpu, uint8_t reg_value) { //ACD r
 
   // TODO: figure a way to refactor this and the non-carry version
   uint8_t result = cpu->registers.A + reg_value + (uint8_t)cpu->flags.C;
@@ -175,7 +174,7 @@ void add_register_carry(CPU *cpu, uint8_t reg_value) {
   return;
 }
 
-void add_memory_carry(CPU *cpu, uint16_t HL) {
+void add_memory_carry(CPU *cpu, uint16_t HL) { //ADC M
   // TODO: DO HELPER FUNC TO COMBINE HL BEFORE PLACING INTO FUNC
 
   // TODO: figure a way to refactor this and the non-carry version
@@ -218,7 +217,7 @@ void add_memory_carry(CPU *cpu, uint16_t HL) {
   return;
 }
 
-void add_data_carry(CPU *cpu, uint8_t byte_two) {
+void add_data_carry(CPU *cpu, uint8_t byte_two) { //ACI data
 
   // TODO: Function to extract byte_two
   // TODO: result + carry = done similar thing twice, make more efficent
@@ -265,7 +264,7 @@ void add_data_carry(CPU *cpu, uint8_t byte_two) {
   return;
 }
 
-void subtract_register(CPU *cpu, uint8_t reg_value) {
+void subtract_register(CPU *cpu, uint8_t reg_value) { //SUB r
   uint8_t carry = unsigned_subtract_carry_check(cpu->registers.A, reg_value);
 
   cpu->flags.AC = aux_carry_sub(cpu->registers.A, reg_value);
@@ -300,7 +299,7 @@ void subtract_register(CPU *cpu, uint8_t reg_value) {
   return;
 }
 
-void subtract_data(CPU *cpu, uint8_t byte_two) {
+void subtract_data(CPU *cpu, uint8_t byte_two) { // SUI data
 
   uint8_t result = cpu->registers.A - byte_two;
   uint8_t carry = unsigned_subtract_carry_check(cpu->registers.A, byte_two);
@@ -334,7 +333,7 @@ void subtract_data(CPU *cpu, uint8_t byte_two) {
   return;
 }
 
-void subtract_memory(CPU *cpu, uint16_t HL) {
+void subtract_memory(CPU *cpu, uint16_t HL) { //SUB M
 
   uint8_t result = cpu->registers.A - cpu->memory[HL];
   uint8_t carry =
@@ -371,7 +370,7 @@ void subtract_memory(CPU *cpu, uint16_t HL) {
   return;
 }
 
-void subtract_register_carry(CPU *cpu, uint8_t register_value) {
+void subtract_register_carry(CPU *cpu, uint8_t register_value) { //SBB r
   uint8_t result = cpu->registers.A - register_value - cpu->flags.C;
   uint8_t carry = unsigned_subtract_carry_check_with_carry(
       cpu->registers.A, register_value, cpu->flags.C);
@@ -408,7 +407,7 @@ void subtract_register_carry(CPU *cpu, uint8_t register_value) {
   return;
 }
 
-void subtract_memory_carry(CPU *cpu, uint16_t HL) {
+void subtract_memory_carry(CPU *cpu, uint16_t HL) { //SBB M
   uint8_t result = cpu->registers.A - cpu->memory[HL] - cpu->flags.C;
   uint8_t carry = unsigned_subtract_carry_check_with_carry(
       cpu->registers.A, cpu->memory[HL], cpu->flags.C);
@@ -446,7 +445,8 @@ void subtract_memory_carry(CPU *cpu, uint16_t HL) {
 }
 
 void subtract_data_carry(
-    CPU *cpu, uint8_t byte_two) { // TODO: helper func to determine 2nd byte
+    CPU *cpu, uint8_t byte_two) { //SBI data
+    // TODO: helper func to determine 2nd byte
                                   // from HL register automatically
   uint8_t result = cpu->registers.A - byte_two - cpu->flags.C;
   uint8_t carry = unsigned_subtract_carry_check_with_carry(
@@ -483,7 +483,8 @@ void subtract_data_carry(
   return;
 }
 
-void increment_register(CPU *cpu, uint8_t *reg) { // NEED to pass in a register
+void increment_register(CPU *cpu, uint8_t *reg) {//INR r
+    // NEED to pass in a register
                                                   // e.g &cpu.registers.A
 
   uint8_t result = (*reg) + 1;
@@ -512,7 +513,7 @@ void increment_register(CPU *cpu, uint8_t *reg) { // NEED to pass in a register
   return;
 }
 
-void increment_memory(CPU *cpu, uint16_t HL) {
+void increment_memory(CPU *cpu, uint16_t HL) { //INR M
   uint8_t result = cpu->memory[HL] + 1;
   cpu->flags.AC = aux_carry_add(cpu->memory[HL], 1);
   cpu->memory[HL] = result;
@@ -538,7 +539,8 @@ void increment_memory(CPU *cpu, uint16_t HL) {
   return;
 }
 
-void decrement_register(CPU *cpu, uint8_t *reg) { // NEED to pass in a register
+void decrement_register(CPU *cpu, uint8_t *reg) { // DCR r
+    // NEED to pass in a register
                                                   // e.g &cpu.registers.A
   cpu->flags.AC = aux_carry_sub(*reg,1);
   uint8_t result = *reg - 1;
@@ -566,7 +568,7 @@ void decrement_register(CPU *cpu, uint8_t *reg) { // NEED to pass in a register
   return;
 }
 
-void decrement_memory(CPU *cpu, uint16_t HL) {
+void decrement_memory(CPU *cpu, uint16_t HL) { //DCR M
   uint8_t result = cpu->memory[HL] - 1;
   cpu->memory[HL] = result;
   cpu->flags.AC = aux_carry_sub(cpu->memory[HL],1);
@@ -611,7 +613,7 @@ void increment_register_pair(uint8_t *high,
   return; //@@@ TODO: probably better to return something.
 }
 
-void decrement_register_pair(uint8_t *high, uint8_t *low) {
+void decrement_register_pair(uint8_t *high, uint8_t *low) { //DCX rp
   uint16_t combined_reg = combine_registers(*high, *low);
   combined_reg = combined_reg - 1;
   SplitBytes sb = split_bytes(combined_reg);
@@ -623,7 +625,7 @@ void decrement_register_pair(uint8_t *high, uint8_t *low) {
 //@@@TODO: maybe just take the combined pair here?
 // makes more sense, but do it in refactors
 // and will need to change the test
-void add_reg_pair_to_HL(CPU *cpu, uint8_t *high, uint8_t *low) {
+void add_reg_pair_to_HL(CPU *cpu, uint8_t *high, uint8_t *low) { //DAD rp
   uint16_t combined_reg = combine_registers(*high, *low);
   uint16_t combined_hl = combine_registers(cpu->registers.H, cpu->registers.L);
   uint16_t added_hl = combined_reg + combined_hl;
@@ -640,7 +642,7 @@ void add_reg_pair_to_HL(CPU *cpu, uint8_t *high, uint8_t *low) {
   return;
 }
 
-void decimal_adjust_accumulator(CPU *cpu) {
+void decimal_adjust_accumulator(CPU *cpu) { // DAA
   if ((cpu->registers.A & 0x0F) > 9 || cpu->flags.AC == 1) {
     uint8_t carry = unsigned_addition_carry_check(cpu->registers.A, 6);
     if (carry) {
