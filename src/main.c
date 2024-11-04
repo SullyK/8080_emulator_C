@@ -3,6 +3,7 @@
 #include "cpu.h"
 #include "data.h"
 #include "flags.h"
+#include "helpers.h"
 #include "io.h"
 #include "logic.h"
 
@@ -315,6 +316,200 @@ int main(void) {
       update_PC(opcode_size(op), &cpu);
       break;
     }
+
+    case 0x07: {
+      rotate_left(&cpu);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+
+    case 0x17: {
+      rotate_left_carry(&cpu);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x27: {
+      decimal_adjust_accumulator(&cpu);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x37: {
+      set_carry(&cpu);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+      // 0x08->0x38 == NOP so skipped as done @ start
+
+    case 0x09: {
+      add_reg_pair_to_HL(&cpu, cpu.registers.B, cpu.registers.C);
+
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+
+    case 0x19: {
+      add_reg_pair_to_HL(&cpu, cpu.registers.D, cpu.registers.E);
+
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+
+    case 0x29: {
+      add_reg_pair_to_HL(&cpu, cpu.registers.H, cpu.registers.L);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+
+    case 0x39: {
+      add_reg_pair_to_HL(&cpu, ((cpu.SP >> 8) & 0xFF), (cpu.SP & 0xFF));
+      update_PC(opcode_size(op), &cpu);
+
+      break;
+    }
+
+    case 0x0A: {
+      load_acc_indirect(&cpu,
+                        combine_registers(cpu.registers.B, cpu.registers.C));
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+
+    case 0x1A: {
+      load_acc_indirect(&cpu,
+                        combine_registers(cpu.registers.D, cpu.registers.E));
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+
+    case 0x2A: {
+      load_h_l_direct(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1]);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+
+    case 0x3A: {
+      load_acc_direct(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1]);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+
+    case 0x0B: {
+      decrement_register_pair(&cpu.registers.B, &cpu.registers.C);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x1B: {
+      decrement_register_pair(&cpu.registers.C, &cpu.registers.D);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x2B: {
+      decrement_register_pair(&cpu.registers.H, &cpu.registers.L);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x3B: {
+      // special case just modify directly
+      cpu.SP -= 1;
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+
+    case 0x0C: {
+      increment_register(&cpu, &cpu.registers.C);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x1C: {
+
+      increment_register(&cpu, &cpu.registers.E);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x2C: {
+
+      increment_register(&cpu, &cpu.registers.L);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x3C: {
+      increment_register(&cpu, &cpu.registers.A);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+
+    case 0x0D: {
+      decrement_register(&cpu, &cpu.registers.C);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x1D: {
+
+      decrement_register(&cpu, &cpu.registers.E);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x2D: {
+
+      decrement_register(&cpu, &cpu.registers.L);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x3D: {
+      decrement_register(&cpu, &cpu.registers.A);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+
+    case 0x0E: {
+      move_immediate(cpu.memory[cpu.PC + 1], &cpu.registers.C);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+
+    case 0x1E: {
+      move_immediate(cpu.memory[cpu.PC + 1], &cpu.registers.E);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+
+    case 0x2E: {
+      move_immediate(cpu.memory[cpu.PC + 1], &cpu.registers.L);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+
+    case 0x3E: {
+      move_immediate(cpu.memory[cpu.PC + 1], &cpu.registers.A);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+
+    case 0x0F: {
+      rotate_right(&cpu);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+
+    case 0x1F: {
+      rotate_right_carry(&cpu);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+
+    case 0x2F: {
+      complement_accumulator(&cpu);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+
+    case 0x3F: {
+      complement_carry(&cpu);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    default:
+      break;
 
       // end of switch statement
     }

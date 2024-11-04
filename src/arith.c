@@ -625,8 +625,8 @@ void decrement_register_pair(uint8_t *high, uint8_t *low) { //DCX rp
 //@@@TODO: maybe just take the combined pair here?
 // makes more sense, but do it in refactors
 // and will need to change the test
-void add_reg_pair_to_HL(CPU *cpu, uint8_t *high, uint8_t *low) { //DAD rp
-  uint16_t combined_reg = combine_registers(*high, *low);
+void add_reg_pair_to_HL(CPU *cpu, uint8_t high, uint8_t low) { //DAD rp
+  uint16_t combined_reg = combine_registers(high, low);
   uint16_t combined_hl = combine_registers(cpu->registers.H, cpu->registers.L);
   uint16_t added_hl = combined_reg + combined_hl;
   SplitBytes sb = split_bytes(added_hl);

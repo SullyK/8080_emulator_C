@@ -699,7 +699,7 @@ TEST(add_register_pair_HL_1, ExampleTest){
     cpu.registers.C = 0x10;
     cpu.registers.H = 0x01;
     cpu.registers.L = 0x01;
-    add_reg_pair_to_HL(&cpu, &cpu.registers.B, &cpu.registers.C);
+    add_reg_pair_to_HL(&cpu, cpu.registers.B, cpu.registers.C);
     uint16_t result = (cpu.registers.H << 8) | cpu.registers.L;
     ASSERT_EQ(result, 1553);
     ASSERT_EQ(cpu.flags.C, 0);
@@ -711,7 +711,7 @@ TEST(add_register_pair_HL_2, ExampleTest){
     cpu.registers.C = 0xFF;
     cpu.registers.H = 0xFF;
     cpu.registers.L = 0xFF;
-    add_reg_pair_to_HL(&cpu, &cpu.registers.B, &cpu.registers.C);
+    add_reg_pair_to_HL(&cpu, cpu.registers.B, cpu.registers.C);
     uint16_t result = (cpu.registers.H << 8) | cpu.registers.L;
     ASSERT_EQ(result, 65534);
     ASSERT_EQ(cpu.flags.C, 1);
@@ -723,7 +723,7 @@ TEST(add_register_pair_HL_3, ExampleTest){
     cpu.registers.C = 0xFF;
     cpu.registers.H = 0x0;
     cpu.registers.L = 0x0;
-    add_reg_pair_to_HL(&cpu, &cpu.registers.B, &cpu.registers.C);
+    add_reg_pair_to_HL(&cpu, cpu.registers.B, cpu.registers.C);
     uint16_t result = (cpu.registers.H << 8) | cpu.registers.L;
     ASSERT_EQ(result, 0xFFFF);
     ASSERT_EQ(cpu.flags.C, 0);

@@ -27,7 +27,7 @@ void decrement_register(CPU *cpu, uint8_t *reg);
 void decrement_memory(CPU *cpu, uint16_t HL);
 void increment_register_pair(uint8_t *high,uint8_t *low);
 void decrement_register_pair(uint8_t *high, uint8_t *low);
-void add_reg_pair_to_HL(CPU *cpu, uint8_t *high, uint8_t *low);
+void add_reg_pair_to_HL(CPU *cpu, uint8_t high, uint8_t low);
 void decimal_adjust_accumulator(CPU *cpu);
 #ifdef __cplusplus
 }
