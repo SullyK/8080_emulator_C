@@ -59,10 +59,12 @@ TEST(move_from_memory, test_2) {
 TEST(move_to_memory, test_1) {
   CPU cpu = {0};
   cpu.registers.C = 43;
-  uint16_t some_combined_reg = 100;
-  cpu.memory[some_combined_reg] = 12;
-  move_to_memory(&cpu, &cpu.registers.C, some_combined_reg);
-  ASSERT_EQ(cpu.memory[100], 43);
+  SplitBytes sb = split_bytes(2000);
+  cpu.registers.H = sb.high;
+  cpu.registers.L = sb.low;
+  cpu.memory[2000] = 12;
+  move_to_memory(&cpu, &cpu.registers.C);
+  ASSERT_EQ(cpu.memory[2000], 43);
 }
 
 TEST(move_immediate, test_1) {

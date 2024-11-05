@@ -508,6 +508,153 @@ int main(void) {
       update_PC(opcode_size(op), &cpu);
       break;
     }
+
+    // Above is the first four rows, doing rows 4 to F now (rest) per set
+    case 0x40: { // B -> B
+      move_register(&cpu.registers.B, &cpu.registers.B);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x50: { // B -> D
+      move_register(&cpu.registers.B, &cpu.registers.D);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x60: { // B -> H
+      move_register(&cpu.registers.B, &cpu.registers.H);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x70: { // B -> memory[HL]
+      move_to_memory(&cpu, &cpu.registers.B);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x80: { // ADD B
+      add_register(&cpu, cpu.registers.B);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x90: { // SUB B
+      subtract_register(&cpu, cpu.registers.B);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xA0: { // ANA B
+      and_register(&cpu, cpu.registers.B);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xB0: { // ORA B
+      or_register(&cpu, cpu.registers.B);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+
+    //  @@@!!!TODO: refactor later - these have bad param names and conditions.
+    //  The mappings SUCK
+    case 0xC0: { // RNZ - 0
+      conditional_branch_return(&cpu, 0);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xD0: { // RNC - 2
+      conditional_branch_return(&cpu, 2);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xE0: { // RPO - 4
+      conditional_branch_return(&cpu, 4);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xF0: { // RP - 6
+      conditional_branch_return(&cpu, 6);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+
+      // column 1(starts from 0), rows 4 to F
+
+    case 0x41: { // C -> B
+      move_register(&cpu.registers.C, &cpu.registers.B);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x51: { // C -> D
+      move_register(&cpu.registers.C, &cpu.registers.D);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x61: { // C -> H
+      move_register(&cpu.registers.C, &cpu.registers.H);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x71: { // C -> memory[HL]
+      move_to_memory(&cpu, &cpu.registers.C);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x81: { // ADD C
+      add_register(&cpu, cpu.registers.C);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x91: { // SUB C
+      subtract_register(&cpu, cpu.registers.C);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xA1: { // ANA C
+      and_register(&cpu, cpu.registers.C);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xB1: { // ORA C
+      or_register(&cpu, cpu.registers.C);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xC1: { // POP B (BC)
+                 // add error handling if BC has
+                 // issues in debugging laterg
+      uint16_t BC = 0;
+      pop_rp(&cpu, &BC);
+      SplitBytes sb = split_bytes(BC);
+      cpu.registers.B = sb.high;
+      cpu.registers.C = sb.low;
+      break;
+    }
+    case 0xD1: { // POP D (DE)
+                 // add error handling if BC has
+                 // issues in debugging laterg
+      uint16_t DE = 0;
+      pop_rp(&cpu, &DE);
+      SplitBytes sb = split_bytes(DE);
+      cpu.registers.D = sb.high;
+      cpu.registers.E = sb.low;
+      break;
+    }
+
+    case 0xE1: { // POP H (HL)
+                 // add error handling if BC has
+                 // issues in debugging laterg
+      uint16_t HL = 0;
+      pop_rp(&cpu, &HL);
+      SplitBytes sb = split_bytes(HL);
+      cpu.registers.H = sb.high;
+      cpu.registers.L = sb.low;
+      break;
+    }
+
+    case 0xF1: {
+      pop_psw(&cpu);
+      break;
+    }
+
+	       // column 2 (3rd on the table), rows 4->F
+
     default:
       break;
 

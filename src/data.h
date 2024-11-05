@@ -11,7 +11,7 @@ extern "C" {
 // insert functions here
 void move_register(uint8_t *src, uint8_t *dest);
 void move_from_memory(CPU *cpu, uint16_t src, uint8_t *dest);
-void move_to_memory(CPU *cpu, uint8_t *src, uint16_t dest);
+void move_to_memory(CPU *cpu, uint8_t *src);
 void move_immediate(uint8_t src, uint8_t *dest);
 void move_immediate_to_memory(CPU *cpu, uint8_t src, uint16_t dest);
 void load_reg_pair_immed(uint8_t reg_high, uint8_t low,
