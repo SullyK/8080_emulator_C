@@ -653,7 +653,201 @@ int main(void) {
       break;
     }
 
-	       // column 2 (3rd on the table), rows 4->F
+      // column 2 (3rd on the table), rows 4->F
+    case 0x42: { // D -> B
+      move_register(&cpu.registers.D, &cpu.registers.B);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x52: { // D -> D
+      move_register(&cpu.registers.D, &cpu.registers.D);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x62: { // D -> H
+      move_register(&cpu.registers.D, &cpu.registers.H);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x72: { // D -> memory[HL]
+      move_to_memory(&cpu, &cpu.registers.D);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x82: { // ADD D
+      add_register(&cpu, cpu.registers.D);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x92: { // SUD D
+      subtract_register(&cpu, cpu.registers.D);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xA2: { // ANA D
+      and_register(&cpu, cpu.registers.D);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xB2: { // ORA D
+      or_register(&cpu, cpu.registers.D);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xC2: { // JNZ
+      conditional_jump(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1], 0);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xD2: { // JNC
+      conditional_jump(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1], 2);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xE2: { // JPO
+      conditional_jump(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1], 4);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xF2: { // JP
+      conditional_jump(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1], 6);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+
+    // column 3 (4th from left) - rows 4->F
+    case 0x43: { // E -> B
+      move_register(&cpu.registers.E, &cpu.registers.B);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x53: { // E -> D
+      move_register(&cpu.registers.E, &cpu.registers.D);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x63: { // E -> H
+      move_register(&cpu.registers.E, &cpu.registers.H);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x73: { // E -> memory[HL]
+      move_to_memory(&cpu, &cpu.registers.E);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x83: { // ADD E
+      add_register(&cpu, cpu.registers.E);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x93: { // SUB E
+      subtract_register(&cpu, cpu.registers.E);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xA3: { // ANA E
+      and_register(&cpu, cpu.registers.E);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xB3: { // ORA E
+      or_register(&cpu, cpu.registers.E);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+
+    case 0xC3: { // JMP
+      jmp_addr(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1]);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+      //@@@!!!TODO: skipped this below case for now - IO
+      //    case 0xD3: {
+      //		   break;
+      //    }
+
+    case 0xE3: {
+      XTHL(&cpu);
+      update_PC(opcode_size(op), &cpu);
+    }
+
+      //@@@!!!TODO: skipped this below case for now - IO
+      //    case 0xF3: {
+      //      break;
+      //    }
+      //
+      //--------------------------------------
+
+    // column 4 (5 from the right), rows 4->f
+    case 0x44: { // H -> B
+      move_register(&cpu.registers.H, &cpu.registers.B);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x54: { // H -> D
+      move_register(&cpu.registers.H, &cpu.registers.D);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x64: { // H -> H
+      move_register(&cpu.registers.H, &cpu.registers.H);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x74: { // H -> memory[HL]
+      move_to_memory(&cpu, &cpu.registers.H);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x84: { // ADD H
+      add_register(&cpu, cpu.registers.H);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x94: { // SUB H
+      subtract_register(&cpu, cpu.registers.H);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xA4: { // ANA H
+      and_register(&cpu, cpu.registers.H);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xB4: { // ORA H
+      or_register(&cpu, cpu.registers.H);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+
+    case 0xC4: {
+      conditional_call(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1], 0);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+
+    case 0xD4: {
+      conditional_call(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1], 2);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+
+    case 0xE4: {
+      conditional_call(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1], 4);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+ 
+    case 0xF4: {
+      conditional_call(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1], 6);
+      update_PC(opcode_size(op), &cpu); 
+      break;
+    }  
+	       //STOPPING HERE. MAJOR BUG:
+	       //condiitonal call modifies PC, 
+	       //see if that has any effect on my branch 
+	       //instructions and rquires diff approach/placement
 
     default:
       break;
