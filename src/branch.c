@@ -40,6 +40,8 @@ void conditional_jump(CPU *cpu, int high_byte, int low_byte,
 
   if (condition_met) {
     cpu->PC = (high_byte << 8) | low_byte;
+  } else {
+    cpu->PC += 3;
   }
 }
 
@@ -89,15 +91,16 @@ void conditional_call(CPU *cpu, int high_byte, int low_byte,
     cpu->memory[cpu->SP - 2] = (cpu->PC & 0xFF);
     cpu->SP = cpu->SP - 2;
     cpu->PC = (high_byte << 8) | low_byte;
+  } else {
+    cpu->PC += 3;
   }
 }
 
 void branch_return(CPU *cpu) {
-     uint8_t low_byte = cpu->memory[cpu->SP];
-    uint8_t high_byte = cpu->memory[(cpu->SP) + 1];
-    cpu->PC = (high_byte << 8) | low_byte;
-    cpu->SP = cpu->SP + 2;
- 
+  uint8_t low_byte = cpu->memory[cpu->SP];
+  uint8_t high_byte = cpu->memory[(cpu->SP) + 1];
+  cpu->PC = (high_byte << 8) | low_byte;
+  cpu->SP = cpu->SP + 2;
 }
 
 void conditional_branch_return(CPU *cpu, uint8_t condition) {
@@ -143,19 +146,19 @@ void conditional_branch_return(CPU *cpu, uint8_t condition) {
     uint8_t high_byte = cpu->memory[(cpu->SP) + 1];
     cpu->PC = (high_byte << 8) | low_byte;
     cpu->SP = cpu->SP + 2;
+  } else {
+    cpu->PC += 1;
   }
 
   return;
 }
 
-void restart(CPU *cpu, uint8_t n_value){
+void restart(CPU *cpu, uint8_t n_value) {
 
-    cpu->memory[(cpu->SP) - 1] = cpu->PC >> 8;
-    cpu->memory[(cpu->SP) - 2] = cpu->PC & 0xFF;
-    cpu->SP = cpu->SP - 2;
-    cpu->PC = 8 * n_value;
+  cpu->memory[(cpu->SP) - 1] = cpu->PC >> 8;
+  cpu->memory[(cpu->SP) - 2] = cpu->PC & 0xFF;
+  cpu->SP = cpu->SP - 2;
+  cpu->PC = 8 * n_value;
 }
 
-void PCHL(CPU *cpu){
-    cpu->PC = (cpu->registers.H << 8 ) | cpu->registers.L;
-}
+void PCHL(CPU *cpu) { cpu->PC = (cpu->registers.H << 8) | cpu->registers.L; }

@@ -555,22 +555,18 @@ int main(void) {
     //  The mappings SUCK
     case 0xC0: { // RNZ - 0
       conditional_branch_return(&cpu, 0);
-      update_PC(opcode_size(op), &cpu);
       break;
     }
     case 0xD0: { // RNC - 2
       conditional_branch_return(&cpu, 2);
-      update_PC(opcode_size(op), &cpu);
       break;
     }
     case 0xE0: { // RPO - 4
       conditional_branch_return(&cpu, 4);
-      update_PC(opcode_size(op), &cpu);
       break;
     }
     case 0xF0: { // RP - 6
       conditional_branch_return(&cpu, 6);
-      update_PC(opcode_size(op), &cpu);
       break;
     }
 
@@ -624,6 +620,7 @@ int main(void) {
       SplitBytes sb = split_bytes(BC);
       cpu.registers.B = sb.high;
       cpu.registers.C = sb.low;
+      update_PC(opcode_size(op), &cpu);
       break;
     }
     case 0xD1: { // POP D (DE)
@@ -634,6 +631,9 @@ int main(void) {
       SplitBytes sb = split_bytes(DE);
       cpu.registers.D = sb.high;
       cpu.registers.E = sb.low;
+
+      update_PC(opcode_size(op), &cpu);
+
       break;
     }
 
@@ -645,11 +645,15 @@ int main(void) {
       SplitBytes sb = split_bytes(HL);
       cpu.registers.H = sb.high;
       cpu.registers.L = sb.low;
+
+      update_PC(opcode_size(op), &cpu);
       break;
     }
 
     case 0xF1: {
       pop_psw(&cpu);
+
+      update_PC(opcode_size(op), &cpu);
       break;
     }
 
@@ -696,22 +700,18 @@ int main(void) {
     }
     case 0xC2: { // JNZ
       conditional_jump(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1], 0);
-      update_PC(opcode_size(op), &cpu);
       break;
     }
     case 0xD2: { // JNC
       conditional_jump(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1], 2);
-      update_PC(opcode_size(op), &cpu);
       break;
     }
     case 0xE2: { // JPO
       conditional_jump(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1], 4);
-      update_PC(opcode_size(op), &cpu);
       break;
     }
     case 0xF2: { // JP
       conditional_jump(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1], 6);
-      update_PC(opcode_size(op), &cpu);
       break;
     }
 
@@ -823,31 +823,167 @@ int main(void) {
 
     case 0xC4: {
       conditional_call(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1], 0);
-      update_PC(opcode_size(op), &cpu);
       break;
     }
 
     case 0xD4: {
       conditional_call(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1], 2);
-      update_PC(opcode_size(op), &cpu);
       break;
     }
 
     case 0xE4: {
       conditional_call(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1], 4);
+      break;
+    }
+
+    case 0xF4: {
+      conditional_call(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1], 6);
+      break;
+    }
+
+      // Column 6 (5th from left) - rows 4->F
+
+    case 0x45: { // L -> B
+      move_register(&cpu.registers.L, &cpu.registers.B);
       update_PC(opcode_size(op), &cpu);
       break;
     }
- 
-    case 0xF4: {
-      conditional_call(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1], 6);
-      update_PC(opcode_size(op), &cpu); 
+    case 0x55: { // L -> D
+      move_register(&cpu.registers.L, &cpu.registers.D);
+      update_PC(opcode_size(op), &cpu);
       break;
-    }  
-	       //STOPPING HERE. MAJOR BUG:
-	       //condiitonal call modifies PC, 
-	       //see if that has any effect on my branch 
-	       //instructions and rquires diff approach/placement
+    }
+    case 0x65: { // L -> H
+      move_register(&cpu.registers.L, &cpu.registers.H);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x75: { // L -> memory[HL]
+      move_to_memory(&cpu, &cpu.registers.L);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x85: { // ADD L
+      add_register(&cpu, cpu.registers.L);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x95: { // SUB L
+      subtract_register(&cpu, cpu.registers.L);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xA5: { // ANA L
+      and_register(&cpu, cpu.registers.L);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xB5: { // ORA L
+      or_register(&cpu, cpu.registers.L);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+
+    case 0xC5: { // PUSH B (BC)
+                 // add error handling if BC has
+                 // issues in debugging laterg
+      uint16_t BC = (cpu.registers.B << 8) | cpu.registers.C;
+      push_rp(&cpu, BC);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xD5: { // PUSH D (DE)
+                 // add error handling if BC has
+                 // issues in debugging laterg
+      uint16_t DE = (cpu.registers.D << 8) | cpu.registers.E;
+      push_rp(&cpu, DE);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+
+    case 0xE5: { // PUSH H (HL)
+                 // add error handling if BC has
+                 // issues in debugging laterg
+      uint16_t HL = (cpu.registers.H << 8) | cpu.registers.L;
+      push_rp(&cpu, HL);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+
+    case 0xF5: {
+      push_psw(&cpu);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+
+      // Column 7 (6th from left) - rows 4->F
+      //
+    case 0x46: { // memory[HL] -> B
+      uint16_t HL = (cpu.registers.H << 8) | cpu.registers.L;
+      move_from_memory(&cpu, HL, &cpu.registers.B);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x56: { // memory[HL]  -> D
+      uint16_t HL = (cpu.registers.H << 8) | cpu.registers.L;
+      move_from_memory(&cpu, HL, &cpu.registers.D);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x66: { // memory[HL] -> H
+      move_register(&cpu.registers.H, &cpu.registers.H);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x76: { // HLT
+      HLT();
+      break;
+    }
+    case 0x86: { // ADD M memory[HL] to accum, store accum
+      uint16_t HL = (cpu.registers.H << 8) | cpu.registers.L;
+      add_memory(&cpu, HL);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x96: { // SUB M memory[HL] from accum, store in acc
+      uint16_t HL = (cpu.registers.H << 8) | cpu.registers.L;
+      subtract_memory(&cpu, HL);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xA6: { // ANA M
+      uint16_t HL = (cpu.registers.H << 8) | cpu.registers.L;
+      subtract_memory(&cpu, HL);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xB6: { // ORA M
+      uint16_t HL = (cpu.registers.H << 8) | cpu.registers.L;
+      or_memory(&cpu, HL);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xC6: { // ADI d8
+      add_data(&cpu, cpu.memory[cpu.PC + 1]);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xD6: { // ADI d8
+      subtract_data(&cpu, cpu.memory[cpu.PC + 1]);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+
+    case 0xE6: { // ANI d8
+      and_immediate(&cpu, cpu.memory[cpu.PC + 1]);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xF6: { // ORI d8
+      or_immediate(&cpu, cpu.memory[cpu.PC + 1]);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
 
     default:
       break;

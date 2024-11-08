@@ -75,7 +75,7 @@ void DI(CPU *cpu) {
 }
 
 void HLT(void) {
-  printf("This should never execute at least for my purpose");
+  printf("The program has reached the HLT instruction and will now end");
   exit(-1);
 }
 

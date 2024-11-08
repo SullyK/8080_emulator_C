@@ -19,7 +19,7 @@ void XTHL(CPU *cpu); //XTHL
 void SPHL(CPU *cpu); //SPHL
 void EI(CPU *cpu); //EI
 void DI(CPU *cpu); //DI
-void HTL(void); //HLT
+void HLT(void); //HLT
 void NOP(void); //NOP
 //@@@!!!TODO: add ports in and out prototypes
 #ifdef __cplusplus
