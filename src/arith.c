@@ -133,7 +133,7 @@ void add_memory(CPU *cpu, uint16_t HL) { // ADD M
   return;
 }
 
-void add_register_carry(CPU *cpu, uint8_t reg_value) { //ACD r
+void add_register_carry(CPU *cpu, uint8_t reg_value) { //ADC r
 
   // TODO: figure a way to refactor this and the non-carry version
   uint8_t result = cpu->registers.A + reg_value + (uint8_t)cpu->flags.C;

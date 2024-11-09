@@ -931,7 +931,8 @@ int main(void) {
       break;
     }
     case 0x66: { // memory[HL] -> H
-      move_register(&cpu.registers.H, &cpu.registers.H);
+      uint16_t HL = (cpu.registers.H << 8) | cpu.registers.L;
+      move_from_memory(&cpu, HL, &cpu.registers.H);
       update_PC(opcode_size(op), &cpu);
       break;
     }
@@ -953,7 +954,7 @@ int main(void) {
     }
     case 0xA6: { // ANA M
       uint16_t HL = (cpu.registers.H << 8) | cpu.registers.L;
-      subtract_memory(&cpu, HL);
+      and_memory(&cpu, HL);
       update_PC(opcode_size(op), &cpu);
       break;
     }
@@ -982,6 +983,184 @@ int main(void) {
     case 0xF6: { // ORI d8
       or_immediate(&cpu, cpu.memory[cpu.PC + 1]);
       update_PC(opcode_size(op), &cpu);
+      break;
+    }
+
+      // column 7 (8 from left), row 4-F
+
+    case 0x47: { //   Mov B,A --> B = A
+      move_register(&cpu.registers.A, &cpu.registers.B);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x57: { // Mov D, A
+      move_register(&cpu.registers.A, &cpu.registers.D);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x67: { // MOV H, A
+      move_register(&cpu.registers.H, &cpu.registers.A);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x77: { // MOV M, A
+      move_to_memory(&cpu, &cpu.registers.A);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x87: { // ADD A
+      add_register(&cpu, cpu.registers.A);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x97: { // SUB A
+      subtract_register(&cpu, cpu.registers.A);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xA7: { // ANA A
+      and_register(&cpu, cpu.registers.A);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xB7: { // ORA A
+      or_register(&cpu, cpu.registers.A);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xC7: { // RST 0
+      restart(&cpu, 0);
+      break;
+    }
+    case 0xD7: { // RST 2
+      restart(&cpu, 2);
+      break;
+    }
+    case 0xE7: { // RST 4
+      restart(&cpu, 4);
+      break;
+    }
+    case 0xF7: { // RST 6
+      restart(&cpu, 6);
+      break;
+    }
+
+      // column 8 (7 from left), row 4-F
+      //
+
+    case 0x48: { //   Mov C,B --> C = B
+      move_register(&cpu.registers.B, &cpu.registers.C);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x58: { // Mov E,B --> E = B
+      move_register(&cpu.registers.B, &cpu.registers.E);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x68: { // MOV L,B --> L = B
+      move_register(&cpu.registers.B, &cpu.registers.L);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x78: { // MOV A,B
+      move_register(&cpu.registers.B, &cpu.registers.A);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x88: { // ADC B
+      add_register_carry(&cpu, cpu.registers.B);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x98: { // SBB B
+      subtract_register_carry(&cpu, cpu.registers.B);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xA8: { // XRA B
+      exclusive_or_register(&cpu, cpu.registers.B);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xB8: { // XRA B
+      compare_register(&cpu, cpu.registers.B);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xC8: { // RZ
+      conditional_branch_return(&cpu, 1);
+      break;
+    }
+    case 0xD8: { // RC
+      conditional_branch_return(&cpu, 3);
+      break;
+    }
+    case 0xE8: { // RPE
+      conditional_branch_return(&cpu, 5);
+      break;
+    }
+    case 0xF8: { // RM
+      conditional_branch_return(&cpu, 7);
+      break;
+    }
+
+      // column 9 (8 from left), row 4-F
+
+    case 0x49: { //   Mov C,C --> C = C
+      move_register(&cpu.registers.C, &cpu.registers.C);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x59: { // Mov E,C  --> E=C
+      move_register(&cpu.registers.C, &cpu.registers.E);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x69: { // MOV L,C
+      move_register(&cpu.registers.C, &cpu.registers.L);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x79: { // MOV A,C
+      move_register(&cpu.registers.C, &cpu.registers.A);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x89: { // ADC C
+      add_register_carry(&cpu, cpu.registers.C);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x99: { // SBB C
+      subtract_register_carry(&cpu, cpu.registers.C);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xA9: { // XRA C
+      exclusive_or_register(&cpu, cpu.registers.C);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xB9: { // CMP C
+      compare_register(&cpu, cpu.registers.C);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xC9: { // RET
+      branch_return(&cpu);
+      break;
+    }
+    case 0xD9: { // RET 
+      branch_return(&cpu);
+      break;
+    }
+    case 0xE9: { // PCHL
+      PCHL(&cpu);
+      break;
+    }
+    case 0xF9: { // SPHL
+      SPHL(&cpu);
       break;
     }
 
