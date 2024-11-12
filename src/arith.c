@@ -444,8 +444,7 @@ void subtract_memory_carry(CPU *cpu, uint16_t HL) { //SBB M
   return;
 }
 
-void subtract_data_carry(
-    CPU *cpu, uint8_t byte_two) { //SBI data
+void subtract_data_carry(CPU *cpu, uint8_t byte_two) { //SBI data
     // TODO: helper func to determine 2nd byte
                                   // from HL register automatically
   uint8_t result = cpu->registers.A - byte_two - cpu->flags.C;
