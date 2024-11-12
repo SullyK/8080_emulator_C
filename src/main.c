@@ -1151,7 +1151,7 @@ int main(void) {
       branch_return(&cpu);
       break;
     }
-    case 0xD9: { // RET 
+    case 0xD9: { // RET
       branch_return(&cpu);
       break;
     }
@@ -1161,6 +1161,248 @@ int main(void) {
     }
     case 0xF9: { // SPHL
       SPHL(&cpu);
+      break;
+    }
+
+      // column 10 (9 from left), row 4-F
+
+    case 0x4A: { //   Mov C,D --> C = D
+      move_register(&cpu.registers.D, &cpu.registers.C);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x5A: { // Mov E,D  --> E = D
+      move_register(&cpu.registers.D, &cpu.registers.E);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x6A: { // MOV L,D
+      move_register(&cpu.registers.D, &cpu.registers.L);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x7A: { // MOV A,D
+      move_register(&cpu.registers.D, &cpu.registers.A);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x8A: { // ADC D
+      add_register_carry(&cpu, cpu.registers.D);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x9A: { // SBB D
+      subtract_register_carry(&cpu, cpu.registers.D);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xAA: { // XRA D
+      exclusive_or_register(&cpu, cpu.registers.D);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xBA: { // CMP D
+      compare_register(&cpu, cpu.registers.D);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xCA: { // JZ
+      conditional_jump(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1], 1);
+      break;
+    }
+    case 0xDA: { // JC
+      conditional_jump(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1], 3);
+      break;
+    }
+    case 0xEA: { // JPE
+      conditional_jump(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1], 5);
+      break;
+    }
+    case 0xFA: { // JM
+      conditional_jump(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1], 7);
+      break;
+    }
+
+      // column 11 (10 from left), row 4-F
+
+    case 0x4B: { //   Mov C,E --> C = E
+      move_register(&cpu.registers.E, &cpu.registers.C);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x5B: { // Mov E,E  --> E = E
+      move_register(&cpu.registers.E, &cpu.registers.E);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x6B: { // MOV L,E
+      move_register(&cpu.registers.E, &cpu.registers.L);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x7B: { // MOV A,E
+      move_register(&cpu.registers.E, &cpu.registers.A);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x8B: { // ADC E
+      add_register_carry(&cpu, cpu.registers.E);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x9B: { // SBB E
+      subtract_register_carry(&cpu, cpu.registers.E);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xAB: { // XRA E
+      exclusive_or_register(&cpu, cpu.registers.E);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xBB: { // CMP E
+      compare_register(&cpu, cpu.registers.E);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xCB: { // *JMP a16
+      jmp_addr(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1]);
+      break;
+    }
+      // not implemented yet @@@TODO: implement
+      //    case 0xDB: { // IN d8
+      //      break;
+      //   }
+
+    case 0xEB: { // XCHG
+
+      exchange_hl_with_de(&cpu);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+      // case 0xFB: { // EI @@@TODO: implement later
+      //      break;
+      //   }
+
+      // column 12 (11 from left), row 4-F
+
+    case 0x4C: { //   Mov C,H --> C = H
+      move_register(&cpu.registers.H, &cpu.registers.C);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x5C: { // Mov E,H  --> E = H
+      move_register(&cpu.registers.H, &cpu.registers.E);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x6C: { // MOV L,H
+      move_register(&cpu.registers.H, &cpu.registers.L);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x7C: { // MOV A,H
+      move_register(&cpu.registers.H, &cpu.registers.A);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x8C: { // ADC H
+      add_register_carry(&cpu, cpu.registers.H);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x9C: { // SBB H
+      subtract_register_carry(&cpu, cpu.registers.H);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xAC: { // XRA H
+      exclusive_or_register(&cpu, cpu.registers.H);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xBC: { // CMP H
+      compare_register(&cpu, cpu.registers.H);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xCC: { // CZ a16
+      conditional_call(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1], 1);
+      break;
+    }
+    case 0xDC: { // CC a16
+      conditional_call(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1], 3);
+      break;
+    }
+    case 0xEC: { // CPE a16
+      conditional_call(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1], 5);
+      break;
+    }
+    case 0xFC: { // CM a16
+      conditional_call(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1], 7);
+      break;
+    }
+
+      // column 13 (12 from left), row 4-F
+      // TODO:continue here:
+      // I changed the below letters from E to do for the
+      // column, start from 0x4d change h to l
+      // also tests failing so check that
+
+    case 0x4D: { //   Mov C,H --> C = H
+      move_register(&cpu.registers.H, &cpu.registers.C);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x5D: { // Mov E,H  --> E = H
+      move_register(&cpu.registers.H, &cpu.registers.E);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x6D: { // MOV L,H
+      move_register(&cpu.registers.H, &cpu.registers.L);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x7D: { // MOV A,H
+      move_register(&cpu.registers.H, &cpu.registers.A);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x8D: { // ADC H
+      add_register_carry(&cpu, cpu.registers.H);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0x9D: { // SBB H
+      subtract_register_carry(&cpu, cpu.registers.H);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xAD: { // XRA H
+      exclusive_or_register(&cpu, cpu.registers.H);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xBD: { // CMP H
+      compare_register(&cpu, cpu.registers.H);
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
+    case 0xCD: { // CZ a16
+      conditional_call(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1], 1);
+      break;
+    }
+    case 0xDD: { // CC a16
+      conditional_call(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1], 3);
+      break;
+    }
+    case 0xED: { // CPE a16
+      conditional_call(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1], 5);
+      break;
+    }
+    case 0xFD: { // CM a16
+      conditional_call(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1], 7);
       break;
     }
 
