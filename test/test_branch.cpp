@@ -27,7 +27,7 @@ TEST(conditionalJump, NZJumpZ1) {
   uint8_t byte_three = 0xFF;
   cpu.flags.Z = 1;
   conditional_jump(&cpu, byte_three, byte_two, 0);
-  ASSERT_EQ(cpu.PC, 1000);
+  ASSERT_EQ(cpu.PC, 1003);
 }
 
 TEST(conditional_jump, NZJumpZ0) {
@@ -57,7 +57,7 @@ TEST(conditional_jump, ZJumpZ0) {
   uint8_t byte_three = 0xFF;
   cpu.flags.Z = 0;
   conditional_jump(&cpu, byte_three, byte_two, 1);
-  ASSERT_EQ(cpu.PC, 1000);
+  ASSERT_EQ(cpu.PC, 1003);
 }
 
 TEST(conditionalJump, NCJumpC1) {
@@ -67,7 +67,7 @@ TEST(conditionalJump, NCJumpC1) {
   uint8_t byte_three = 0xFF;
   cpu.flags.C = 1;
   conditional_jump(&cpu, byte_three, byte_two, 2);
-  ASSERT_EQ(cpu.PC, 1000);
+  ASSERT_EQ(cpu.PC, 1003);
 }
 
 TEST(conditional_jump, NCJumpC0) {
@@ -97,7 +97,7 @@ TEST(conditional_jump, CJumpC0) {
   uint8_t byte_three = 0xFF;
   cpu.flags.C = 0;
   conditional_jump(&cpu, byte_three, byte_two, 3);
-  ASSERT_EQ(cpu.PC, 1000);
+  ASSERT_EQ(cpu.PC, 1003);
 }
 
 TEST(conditionalJump, POJumpP1) {
@@ -107,7 +107,7 @@ TEST(conditionalJump, POJumpP1) {
   uint8_t byte_three = 0xFF;
   cpu.flags.P = 1;
   conditional_jump(&cpu, byte_three, byte_two, 4);
-  ASSERT_EQ(cpu.PC, 1000);
+  ASSERT_EQ(cpu.PC, 1003);
 }
 
 TEST(conditional_jump, POJumpP0) {
@@ -137,7 +137,7 @@ TEST(conditional_jump, PEJumpP0) {
   uint8_t byte_three = 0xFF;
   cpu.flags.C = 0;
   conditional_jump(&cpu, byte_three, byte_two, 5);
-  ASSERT_EQ(cpu.PC, 1000);
+  ASSERT_EQ(cpu.PC, 1003);
 }
 
 TEST(conditionalJump, PJumpS1) {
@@ -147,7 +147,7 @@ TEST(conditionalJump, PJumpS1) {
   uint8_t byte_three = 0xFF;
   cpu.flags.S = 1;
   conditional_jump(&cpu, byte_three, byte_two, 6);
-  ASSERT_EQ(cpu.PC, 1000);
+  ASSERT_EQ(cpu.PC, 1003);
 }
 
 TEST(conditional_jump, PJumpS0) {
@@ -177,7 +177,7 @@ TEST(conditional_jump, MJumpS0) {
   uint8_t byte_three = 0xFF;
   cpu.flags.S = 0;
   conditional_jump(&cpu, byte_three, byte_two, 7);
-  ASSERT_EQ(cpu.PC, 1000);
+  ASSERT_EQ(cpu.PC, 1003);
 }
 
 TEST(call_addr, test1) {
@@ -208,7 +208,7 @@ TEST(conditional_call, NZJmpZ1) {
   ASSERT_EQ(cpu.memory[999], 0xAA);
   ASSERT_EQ(cpu.memory[998], 0xBB);
   ASSERT_EQ(cpu.SP, 1000);
-  ASSERT_EQ(cpu.PC, 0x0402);
+  ASSERT_EQ(cpu.PC, 0x0405);
 }
 
 TEST(conditional_call, NZJmpZ0) {
@@ -257,7 +257,7 @@ TEST(conditional_call, ZJmpZ0) {
   ASSERT_EQ(cpu.memory[999], 0xAA);
   ASSERT_EQ(cpu.memory[998], 0xBB);
   ASSERT_EQ(cpu.SP, 1000);
-  ASSERT_EQ(cpu.PC, 0x0402);
+  ASSERT_EQ(cpu.PC, 0x0405);
 }
 
 //-------
@@ -275,7 +275,7 @@ TEST(conditional_call, NCJmpC1) {
   ASSERT_EQ(cpu.memory[999], 0xAA);
   ASSERT_EQ(cpu.memory[998], 0xBB);
   ASSERT_EQ(cpu.SP, 1000);
-  ASSERT_EQ(cpu.PC, 0x0402);
+  ASSERT_EQ(cpu.PC, 0x0405);
 }
 
 TEST(conditional_call, NCJmpC0) {
@@ -323,7 +323,7 @@ TEST(conditional_call, CJmpC0) {
   ASSERT_EQ(cpu.memory[999], 0xAA);
   ASSERT_EQ(cpu.memory[998], 0xBB);
   ASSERT_EQ(cpu.SP, 1000);
-  ASSERT_EQ(cpu.PC, 0x0402);
+  ASSERT_EQ(cpu.PC, 0x0405);
 }
 
 //-------
@@ -341,7 +341,7 @@ TEST(conditional_call, POJmpP1) {
   ASSERT_EQ(cpu.memory[999], 0xAA);
   ASSERT_EQ(cpu.memory[998], 0xBB);
   ASSERT_EQ(cpu.SP, 1000);
-  ASSERT_EQ(cpu.PC, 0x0402);
+  ASSERT_EQ(cpu.PC, 0x0405);
 }
 
 TEST(conditional_call, POJmpP0) {
@@ -389,7 +389,7 @@ TEST(conditional_call, PEJmpP0) {
   ASSERT_EQ(cpu.memory[999], 0xAA);
   ASSERT_EQ(cpu.memory[998], 0xBB);
   ASSERT_EQ(cpu.SP, 1000);
-  ASSERT_EQ(cpu.PC, 0x0402);
+  ASSERT_EQ(cpu.PC, 0x0405);
 }
 
 //-------
@@ -407,7 +407,7 @@ TEST(conditional_call, PJmpS1) {
   ASSERT_EQ(cpu.memory[999], 0xAA);
   ASSERT_EQ(cpu.memory[998], 0xBB);
   ASSERT_EQ(cpu.SP, 1000);
-  ASSERT_EQ(cpu.PC, 0x0402);
+  ASSERT_EQ(cpu.PC, 0x0405);
 }
 
 TEST(conditional_call, PJmpS0) {
@@ -455,7 +455,7 @@ TEST(conditional_call, MJmpS0) {
   ASSERT_EQ(cpu.memory[999], 0xAA);
   ASSERT_EQ(cpu.memory[998], 0xBB);
   ASSERT_EQ(cpu.SP, 1000);
-  ASSERT_EQ(cpu.PC, 0x0402);
+  ASSERT_EQ(cpu.PC, 0x0405);
 }
 
 TEST(branch_return, test1) {
@@ -521,54 +521,69 @@ INSTANTIATE_TEST_SUITE_P(
         ConditionalBranchTestParams{0, 0, 0, 0, 500, 0xFFFF, 0xAF, 0x22, 0x22AF,
                                     502, 0},
         // below test - Not zero - z=1, condtion not met
-        ConditionalBranchTestParams{1, 0, 0, 0, 500, 0xFFFF, 0xAF, 0x22, 0xFFFF,
+        ConditionalBranchTestParams{1, 0, 0, 0, 500, 0xFFFA, 0xAF, 0x22, 0xFFFB,
                                     500, 0},
         // below test - zero, - z=0, conditon not met
-        ConditionalBranchTestParams{0, 0, 0, 0, 500, 0xFFFF, 0xAF, 0x22, 0xFFFF,
+        ConditionalBranchTestParams{0, 0, 0, 0, 500, 0xFFFA, 0xAF, 0x22,
+        0xFFFB,
                                     500, 1},
         // below test - zero, - z=1, condition met
-        ConditionalBranchTestParams{1, 0, 0, 0, 500, 0xFFFF, 0xAF, 0x22, 0x22AF,
+        ConditionalBranchTestParams{1, 0, 0, 0, 500, 0xFFFA, 0xAF, 0x22,
+        0x22AF,
                                     502, 1},
         // below test - Not carry, - c=0, condition met
-        ConditionalBranchTestParams{0, 0, 0, 0, 500, 0xFFFF, 0xAF, 0x22, 0x22AF,
+        ConditionalBranchTestParams{0, 0, 0, 0, 500, 0xFFFA, 0xAF, 0x22,
+        0x22AF,
                                     502, 2},
         // below test - Not carry, c=1, condition notmet
-        ConditionalBranchTestParams{0, 1, 0, 1, 500, 0xFFFF, 0xAF, 0x22, 0xFFFF,
+        ConditionalBranchTestParams{0, 1, 0, 1, 500, 0xFFFA, 0xAF, 0x22,
+        0xFFFB,
                                     500, 2},
         // below test - carry, c=0, condition notmet
-        ConditionalBranchTestParams{0, 0, 0, 1, 500, 0xFFFF, 0xAF, 0x22, 0xFFFF,
+        ConditionalBranchTestParams{0, 0, 0, 1, 500, 0xFFFA, 0xAF, 0x22,
+        0xFFFB,
                                     500, 3},
         // below test - carry, c=1, condition met
-        ConditionalBranchTestParams{0, 1, 0, 0, 500, 0xFFFF, 0xAF, 0x22, 0x22AF,
+        ConditionalBranchTestParams{0, 1, 0, 0, 500, 0xFFFA, 0xAF, 0x22,
+        0x22AF,
                                     502, 3},
         // below test - parity odd, p=0, condition met
-        ConditionalBranchTestParams{0, 0, 0, 0, 500, 0xFFFF, 0xAF, 0x22, 0x22AF,
+        ConditionalBranchTestParams{0, 0, 0, 0, 500, 0xFFFA, 0xAF, 0x22,
+        0x22AF,
                                     502, 4},
         // below test - parity odd, p=1, condition not met
-        ConditionalBranchTestParams{0, 0, 1, 0, 500, 0xFFFF, 0xAF, 0x22, 0xFFFF,
+        ConditionalBranchTestParams{0, 0, 1, 0, 500, 0xFFFA, 0xAF, 0x22,
+        0xFFFB,
                                     500, 4},
         // below test - parity even, p=0, condition not met
-        ConditionalBranchTestParams{0, 0, 0, 0, 500, 0xFFFF, 0xAF, 0x22, 0xFFFF,
+        ConditionalBranchTestParams{0, 0, 0, 0, 500, 0xFFFA, 0xAF, 0x22,
+        0xFFFB,
                                     500, 5},
         // below test - parity even, p=1, condition met
-        ConditionalBranchTestParams{0, 0, 1, 0, 500, 0xFFFF, 0xAF, 0x22, 0x22AF,
+        ConditionalBranchTestParams{0, 0, 1, 0, 500, 0xFFFA, 0xAF, 0x22,
+        0x22AF,
                                     502, 5},
         // below test - plus , s=0, condition met
-        ConditionalBranchTestParams{0, 0, 0, 0, 500, 0xFFFF, 0xAF, 0x22, 0x22AF,
+        ConditionalBranchTestParams{0, 0, 0, 0, 500, 0xFFFA, 0xAF, 0x22,
+        0x22AF,
                                     502, 6},
         // below test - plus, s=1, condition not met
-        ConditionalBranchTestParams{0, 0, 0, 1, 500, 0xFFFF, 0xAF, 0x22, 0xFFFF,
+        ConditionalBranchTestParams{0, 0, 0, 1, 500, 0xFFFA, 0xAF, 0x22,
+        0xFFFB,
                                     500, 6},
         // below test - minus , s=0, condition not met
-        ConditionalBranchTestParams{0, 0, 0, 0, 500, 0xFFFF, 0xAF, 0x22, 0xFFFF,
+        ConditionalBranchTestParams{0, 0, 0, 0, 500, 0xFFFA, 0xAF, 0x22,
+        0xFFFB,
                                     500, 7},
         // below test - minus, , s=1, condition met
-        ConditionalBranchTestParams{0, 0, 0, 1, 500, 0xFFFF, 0xAF, 0x22, 0x22AF,
+        ConditionalBranchTestParams{0, 0, 0, 1, 500, 0xFFFA, 0xAF, 0x22,
+        0x22AF,
                                     502, 7}));
 // above = conditional return
 // ----------------------------------------
 //
- TEST(restart, test1) {
+
+TEST(restart, test1) {
   CPU cpu = {0};
   cpu.SP = 5555;
   cpu.PC = 0xA24F;
@@ -583,7 +598,7 @@ INSTANTIATE_TEST_SUITE_P(
   ASSERT_EQ(cpu.PC, 16); // 0x10
 }
 
- TEST(restart, lowest_sp) {
+TEST(restart, lowest_sp) {
   CPU cpu = {0};
   cpu.SP = 2;
   cpu.PC = 0x1234;
@@ -599,7 +614,7 @@ INSTANTIATE_TEST_SUITE_P(
                               // from rsrt instruction
 }
 
- TEST(restart, highest_sp) {
+TEST(restart, highest_sp) {
   CPU cpu = {0};
   cpu.SP = 0xFFFF;
   cpu.PC = 0xABCD;
@@ -614,7 +629,7 @@ INSTANTIATE_TEST_SUITE_P(
   ASSERT_EQ(cpu.SP, 0xFFFF - 2);
   ASSERT_EQ(cpu.PC, (n_value * 8));
 }
- TEST(PCHL, test1) {
+TEST(PCHL, test1) {
   CPU cpu = {0};
   cpu.PC = 0xFFFF;
   cpu.registers.H = 0xAA; // high byte

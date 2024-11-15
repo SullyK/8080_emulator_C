@@ -130,13 +130,14 @@ int main(void) {
   // this is really not going to be great but i didn't think too hard about
   // how i designed it so i will just implement it as is and maybe refactor it
 
-  for (;;) {
-    // need to do the checking for interrupts somewhere at the start or end...
-    //
+  for (int i = 0; i<2000; i++) {
+    // TODO: need to do the checking for interrupts somewhere at the start or end...
 
-    printf("cpu.PC value: %d\n", cpu.PC);
+
 
     op = cpu.memory[cpu.PC];
+    printf("Opcode: 0x%02X\n", op);
+    printf("Flags - Z: %d, C: %d, P: %d, S: %d\n", cpu.flags.Z, cpu.flags.C, cpu.flags.P, cpu.flags.S);
     switch (op) {
     case 0x00:
     case 0x08:
