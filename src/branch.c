@@ -46,9 +46,9 @@ void conditional_jump(CPU *cpu, int high_byte, int low_byte,
 }
 
 void call_addr(CPU *cpu, int high_byte, int low_byte) {
-  cpu->memory[cpu->SP - 1] = (cpu->PC >> 8);
-  cpu->memory[cpu->SP - 2] = (cpu->PC & 0xFF);
   cpu->SP = cpu->SP - 2;
+  cpu->memory[cpu->SP] = (cpu->PC >> 8);
+  cpu->memory[cpu->SP + 1] = (cpu->PC & 0xFF);
   cpu->PC = (high_byte << 8) | low_byte;
 }
 

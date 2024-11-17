@@ -189,8 +189,8 @@ TEST(call_addr, test1) {
   uint8_t byte_two = 0xCC;
   uint8_t byte_three = 0x7A;
   call_addr(&cpu, byte_three, byte_two);
-  ASSERT_EQ(cpu.memory[999], 0x04);
-  ASSERT_EQ(cpu.memory[998], 0x02);
+  ASSERT_EQ(cpu.memory[998], 0x04);
+  ASSERT_EQ(cpu.memory[999], 0x02);
   ASSERT_EQ(cpu.SP, 998);
   ASSERT_EQ(cpu.PC, 0x7ACC);
 }

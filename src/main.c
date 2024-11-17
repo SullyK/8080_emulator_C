@@ -12,6 +12,8 @@
 #include <string.h>
 uint8_t opcodeSizes[256];
 
+#define DEBUG 1
+
 int opcode_size(uint8_t opcode) { return opcodeSizes[opcode]; }
 
 void update_PC(uint8_t number, CPU *cpu) { cpu->PC += number; }
@@ -78,7 +80,7 @@ void init_opcodes_sizes_array(void) {
 // platform specific API
 void read_file_into_mem(CPU *cpu) {
   // For now this will be hardcoded - for testing
-  FILE *fp = fopen("TEST.ASM", "rb");
+  FILE *fp = fopen("zexall.com", "rb");
   if (fp == NULL) {
     printf("error in reading your file\n");
     exit(-1);
@@ -109,12 +111,13 @@ void read_file_into_mem(CPU *cpu) {
     }
   }
   fclose(fp);
-  //  memcpy(cpu->memory, buffer, file_length);
-  //  below is for testing purposes:
-
+#ifdef DEBUG
+  // For testing only
   memcpy(cpu->memory + 1000, buffer, file_length);
+#else
+  memcpy(cpu->memory, buffer, file_length);
+#endif
   free(buffer);
-
   //!!!@@@TODO: Remove Malloc entirely, known file lenght or error out
   // for now just assume it's safe
   // add checks later
@@ -129,22 +132,26 @@ int main(void) {
   read_file_into_mem(&cpu);
   init_opcodes_sizes_array();
   uint8_t op = 0;
-  //@@@TODO: Continue here.
-  //1) get the .COM files working setup, so that I can run
-  //the suite and see if my opcodes are working
-  //2) add debug defines to revert back to workable state
 
+#ifdef DEBUG
+  cpu.memory[0x0005] = 0xc9;
+  cpu.PC = 0x0100;
+  printf("Debug mode active");
+#endif
   // this is really not going to be great but i didn't think too hard about
   // how i designed it so i will just implement it as is and maybe refactor it
 
-  for (int i = 0; i < 2000; i++) {
+  for (;;) {
+
     // TODO: need to do the checking for interrupts somewhere at the start or
     // end...
 
     op = cpu.memory[cpu.PC];
-    //    printf("Opcode: 0x%02X\n", op);
-    //   printf("Flags - Z: %d, C: %d, P: %d, S: %d\n", cpu.flags.Z,
-    //   cpu.flags.C, cpu.flags.P, cpu.flags.S);
+    //    if(op != 0xC0 && op != 0xCD){
+    printf("Opcode: 0x%02X\n", op);
+    printf("Flags - Z: %d, C: %d, P: %d, S: %d\n", cpu.flags.Z, cpu.flags.C,
+           cpu.flags.P, cpu.flags.S);
+    //   }
     switch (op) {
     case 0x00:
     case 0x08:
@@ -781,9 +788,10 @@ int main(void) {
     }
 
       //@@@!!!TODO: skipped this below case for now - IO
-      //    case 0xF3: {
-      //      break;
-      //    }
+    case 0xF3: {
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
       //
       //--------------------------------------
 
@@ -1156,8 +1164,23 @@ int main(void) {
       break;
     }
     case 0xC9: { // RET
-      
-		   branch_return(&cpu);
+#ifdef DEBUG
+      if (cpu.registers.C == 9) {
+        uint16_t address = (cpu.registers.D << 8) | cpu.registers.E;
+        char ch;
+
+        while ((ch = cpu.memory[address]) != '$') {
+          putchar(ch);
+          address++;
+        }
+        fflush(stdout);
+      } else if (cpu.registers.C == 2) {
+        putchar(cpu.registers.E);
+        fflush(stdout);
+      }
+#endif
+
+      branch_return(&cpu);
       break;
     }
     case 0xD9: { // RET
