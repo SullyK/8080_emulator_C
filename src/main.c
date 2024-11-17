@@ -113,7 +113,7 @@ void read_file_into_mem(CPU *cpu) {
   fclose(fp);
 #ifdef DEBUG
   // For testing only
-  memcpy(cpu->memory + 1000, buffer, file_length);
+  memcpy(cpu->memory + 0x0100, buffer, file_length);
 #else
   memcpy(cpu->memory, buffer, file_length);
 #endif
@@ -136,12 +136,44 @@ int main(void) {
 #ifdef DEBUG
   cpu.memory[0x0005] = 0xc9;
   cpu.PC = 0x0100;
+  //  for(int i =0; i<200; ++i){
+  //      printf("memory[%u] = %u\n", i, cpu.memory[i]);
+  //  }
   printf("Debug mode active");
 #endif
   // this is really not going to be great but i didn't think too hard about
   // how i designed it so i will just implement it as is and maybe refactor it
+printf("Memory at 0xD21D: 0x%02X\n", cpu.memory[0xD21D]);
+printf("Memory at 0xD21E: 0x%02X\n", cpu.memory[0xD21E]);
+printf("Memory at 0xD21F: 0x%02X\n", cpu.memory[0xD21F]);
 
   for (;;) {
+#ifdef DEBUG
+    if (cpu.PC == 0xFFFF)
+      break;
+    if (cpu.PC == 0x0000) {
+      printf("Print by sully - End of Test\n");
+      exit(0);
+    }
+
+    if (cpu.PC == 0x0005) {
+      uint8_t C = cpu.registers.C;
+      if (C == 0x02) {
+        // Print E as an ASCII character
+        putchar(cpu.registers.E);
+        fflush(stdout);
+      } else if (C == 0x09) {
+        // Print memory pointed by DE until '$'
+        uint16_t DE = (cpu.registers.D << 8) | cpu.registers.E;
+        char ch;
+        while ((ch = cpu.memory[DE]) != '$') {
+          putchar(ch);
+          DE++;
+        }
+        fflush(stdout);
+      }
+    }
+#endif
 
     // TODO: need to do the checking for interrupts somewhere at the start or
     // end...
@@ -773,14 +805,22 @@ int main(void) {
     }
 
     case 0xC3: { // JMP
+      printf("Jumping to high:%x low: %x", cpu.memory[cpu.PC + 2],
+             cpu.memory[cpu.PC + 1]);
+      printf("Memory at 0x0113: 0x%02X\n", cpu.memory[0x0113]);
+      printf("Memory at 0x0114: 0x%02X\n", cpu.memory[0x0114]);
+
       jmp_addr(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1]);
       update_PC(opcode_size(op), &cpu);
       break;
     }
       //@@@!!!TODO: skipped this below case for now - IO
-      //    case 0xD3: {
-      //		   break;
-      //    }
+    case 0xD3: {
+      // no implemented
+
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
 
     case 0xE3: {
       XTHL(&cpu);
@@ -789,6 +829,7 @@ int main(void) {
 
       //@@@!!!TODO: skipped this below case for now - IO
     case 0xF3: {
+      cpu.int_enabled = 0;
       update_PC(opcode_size(op), &cpu);
       break;
     }
@@ -1164,27 +1205,13 @@ int main(void) {
       break;
     }
     case 0xC9: { // RET
-#ifdef DEBUG
-      if (cpu.registers.C == 9) {
-        uint16_t address = (cpu.registers.D << 8) | cpu.registers.E;
-        char ch;
-
-        while ((ch = cpu.memory[address]) != '$') {
-          putchar(ch);
-          address++;
-        }
-        fflush(stdout);
-      } else if (cpu.registers.C == 2) {
-        putchar(cpu.registers.E);
-        fflush(stdout);
-      }
-#endif
-
       branch_return(&cpu);
+      printf("Returning to address: 0x%04X\n", cpu.PC);
       break;
     }
     case 0xD9: { // RET
       branch_return(&cpu);
+      printf("Returning to address: 0x%04X\n", cpu.PC);
       break;
     }
     case 0xE9: { // PCHL
@@ -1193,6 +1220,7 @@ int main(void) {
     }
     case 0xF9: { // SPHL
       SPHL(&cpu);
+      update_PC(opcode_size(op), &cpu);
       break;
     }
 
@@ -1302,9 +1330,12 @@ int main(void) {
       break;
     }
       // not implemented yet @@@TODO: implement
-      //    case 0xDB: { // IN d8
-      //      break;
-      //   }
+    case 0xDB: { // IN d8
+                 // no implemented
+
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
 
     case 0xEB: { // XCHG
 
@@ -1312,9 +1343,11 @@ int main(void) {
       update_PC(opcode_size(op), &cpu);
       break;
     }
-      // case 0xFB: { // EI @@@TODO: implement later
-      //      break;
-      //   }
+    case 0xFB: { // EI
+      cpu.int_enabled = 1;
+      update_PC(opcode_size(op), &cpu);
+      break;
+    }
 
       // column 12 (11 from left), row 4-F
 

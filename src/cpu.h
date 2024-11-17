@@ -35,7 +35,6 @@ typedef struct CPU {
   uint16_t PC;
   uint8_t memory[MEMORY_SIZE];
   bool int_enabled;
-  bool int_pending;
   uint8_t shift_offset;
   uint8_t shift_low;
   uint8_t shift_high;

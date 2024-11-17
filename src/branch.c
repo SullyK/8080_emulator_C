@@ -99,7 +99,7 @@ void conditional_call(CPU *cpu, int high_byte, int low_byte,
 void branch_return(CPU *cpu) {
   uint8_t low_byte = cpu->memory[cpu->SP];
   uint8_t high_byte = cpu->memory[(cpu->SP) + 1];
-  cpu->PC = (high_byte << 8) | low_byte;
+  cpu->PC = (high_byte << 8) | (low_byte & 0xFF);
   cpu->SP = cpu->SP + 2;
 }
 
@@ -144,7 +144,7 @@ void conditional_branch_return(CPU *cpu, uint8_t condition) {
   if (condition_met) {
     uint8_t low_byte = cpu->memory[cpu->SP];
     uint8_t high_byte = cpu->memory[(cpu->SP) + 1];
-    cpu->PC = (high_byte << 8) | low_byte;
+    cpu->PC = (high_byte << 8) | (low_byte & 0xFF);
     cpu->SP = cpu->SP + 2;
   } else {
     cpu->PC += 1;

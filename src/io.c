@@ -68,10 +68,9 @@ void out_port(CPU *cpu, uint8_t port) {
 }
 
 //!!!@@@TODO: THESE haven't got tests -- do them
-void EI(CPU *cpu) { cpu->int_pending = true; }
+void EI(CPU *cpu) { cpu->int_enabled = 1; }
 void DI(CPU *cpu) {
   cpu->int_enabled = false;
-  cpu->int_pending = false;
 }
 
 void HLT(void) {
