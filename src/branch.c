@@ -46,10 +46,10 @@ void conditional_jump(CPU *cpu, int high_byte, int low_byte,
 }
 
 void call_addr(CPU *cpu, int high_byte, int low_byte) {
-  cpu->SP = cpu->SP - 2;
-  cpu->memory[cpu->SP] = (cpu->PC >> 8);
-  cpu->memory[cpu->SP + 1] = (cpu->PC & 0xFF);
+  cpu->memory[cpu->SP - 1] = (cpu->PC >> 8);
+  cpu->memory[cpu->SP - 2] = (cpu->PC & 0xFF);
   cpu->PC = (high_byte << 8) | low_byte;
+  cpu->SP = cpu->SP - 2;
 }
 
 void conditional_call(CPU *cpu, int high_byte, int low_byte,
@@ -87,13 +87,15 @@ void conditional_call(CPU *cpu, int high_byte, int low_byte,
   }
 
   if (condition_met) {
-    cpu->SP = cpu->SP - 2;
-    cpu->memory[cpu->SP] = (cpu->PC >> 8);
-    cpu->memory[cpu->SP + 1] = (cpu->PC & 0xFF);
+      //TODO: CHECK THIS LOOKS BROKEN
+    cpu->memory[cpu->SP - 1] = (cpu->PC >> 8);
+    cpu->memory[cpu->SP - 2] = (cpu->PC & 0xFF);
     cpu->PC = (high_byte << 8) | low_byte;
-  } else {
-    cpu->PC += 3;
-  }
+    cpu->SP = cpu->SP - 2;
+}
+else {
+  cpu->PC += 3;
+}
 }
 
 void branch_return(CPU *cpu) {
