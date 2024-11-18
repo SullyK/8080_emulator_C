@@ -5,6 +5,11 @@ test_runner
 *.so
 *.exe
 *.swp
+*.txt
+*.COM
+*.ASM
+.DS_Store
+*.DS_Store
 googletest/build/
 googletest/*.o
 googletest/*.a

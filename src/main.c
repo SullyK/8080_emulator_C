@@ -80,7 +80,7 @@ void init_opcodes_sizes_array(void) {
 // platform specific API
 void read_file_into_mem(CPU *cpu) {
   // For now this will be hardcoded - for testing
-  FILE *fp = fopen("zexall.com", "rb");
+  FILE *fp = fopen("TST8080.COM", "rb");
   if (fp == NULL) {
     printf("error in reading your file\n");
     exit(-1);
@@ -134,20 +134,20 @@ int main(void) {
   uint8_t op = 0;
 
 #ifdef DEBUG
-  cpu.memory[0x0005] = 0xc9;
+  cpu.memory[0x0005] = 0xC9;
   cpu.PC = 0x0100;
-  //  for(int i =0; i<200; ++i){
-  //      printf("memory[%u] = %u\n", i, cpu.memory[i]);
-  //  }
+  //    for(int i = 0x0100; i<( 0x0100+ 1000); ++i){
+  //        printf("memory[%u] = %x\n", i, cpu.memory[i]);
+  //    }
   printf("Debug mode active");
 #endif
   // this is really not going to be great but i didn't think too hard about
   // how i designed it so i will just implement it as is and maybe refactor it
-printf("Memory at 0xD21D: 0x%02X\n", cpu.memory[0xD21D]);
-printf("Memory at 0xD21E: 0x%02X\n", cpu.memory[0xD21E]);
-printf("Memory at 0xD21F: 0x%02X\n", cpu.memory[0xD21F]);
-
-  for (;;) {
+  // printf("Memory at 0xD21D: 0x%02X\n", cpu.memory[0xD21D]);
+  // printf("Memory at 0xD21E: 0x%02X\n", cpu.memory[0xD21E]);
+  // printf("Memory at 0xD21F: 0x%02X\n", cpu.memory[0xD21F]);
+  //
+  for (int x = 0; x < 1000000; x++) {
 #ifdef DEBUG
     if (cpu.PC == 0xFFFF)
       break;
@@ -160,7 +160,7 @@ printf("Memory at 0xD21F: 0x%02X\n", cpu.memory[0xD21F]);
       uint8_t C = cpu.registers.C;
       if (C == 0x02) {
         // Print E as an ASCII character
-        putchar(cpu.registers.E);
+        printf("%c", cpu.registers.E);
         fflush(stdout);
       } else if (C == 0x09) {
         // Print memory pointed by DE until '$'
@@ -1205,13 +1205,15 @@ printf("Memory at 0xD21F: 0x%02X\n", cpu.memory[0xD21F]);
       break;
     }
     case 0xC9: { // RET
+      printf("Before RET: PC=0x%04X, SP=0x%04X\n", cpu.PC, cpu.SP);
       branch_return(&cpu);
+      printf("After RET: PC=0x%04X, SP=0x%04X\n", cpu.PC, cpu.SP);
       printf("Returning to address: 0x%04X\n", cpu.PC);
       break;
     }
     case 0xD9: { // RET
       branch_return(&cpu);
-      printf("Returning to address: 0x%04X\n", cpu.PC);
+      //     printf("Returning to address: 0x%04X\n", cpu.PC);
       break;
     }
     case 0xE9: { // PCHL
@@ -1338,6 +1340,10 @@ printf("Memory at 0xD21F: 0x%02X\n", cpu.memory[0xD21F]);
     }
 
     case 0xEB: { // XCHG
+		 // @@@TODO: Go to the VS code and check 
+		 // all instructions from where I start 
+		 // are all correct.
+		 // There is no other way :(
 
       exchange_hl_with_de(&cpu);
       update_PC(opcode_size(op), &cpu);
@@ -1455,9 +1461,14 @@ printf("Memory at 0xD21F: 0x%02X\n", cpu.memory[0xD21F]);
       break;
     }
     case 0xCD: { // CALL a16
+      uint16_t addr = (cpu.memory[cpu.PC + 2] << 8) | cpu.memory[cpu.PC + 1];
+      printf("Before CALL: PC=0x%04X, SP=0x%04X, Calling address: 0x%04X\n",
+             cpu.PC, cpu.SP, addr);
       call_addr(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1]);
+      printf("After CALL: PC=0x%04X, SP=0x%04X\n", cpu.PC, cpu.SP);
       break;
     }
+
     case 0xDD: { // *CALL a16
       call_addr(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1]);
       break;

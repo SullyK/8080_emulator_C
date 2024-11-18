@@ -184,13 +184,13 @@ TEST(call_addr, test1) {
   CPU cpu = {0};
   cpu.SP = 1000;
   cpu.PC = 0x0402;
-  cpu.memory[cpu.SP - 1] = 0xAA; // 999
-  cpu.memory[cpu.SP - 2] = 0xBB; // 998
+  cpu.memory[cpu.SP - 1] = 0xAA; 
+  cpu.memory[cpu.SP - 2] = 0xBB; 
   uint8_t byte_two = 0xCC;
   uint8_t byte_three = 0x7A;
   call_addr(&cpu, byte_three, byte_two);
-  ASSERT_EQ(cpu.memory[998], 0x04);
-  ASSERT_EQ(cpu.memory[999], 0x02);
+  ASSERT_EQ(cpu.memory[999], 0x04);
+  ASSERT_EQ(cpu.memory[998], 0x02);
   ASSERT_EQ(cpu.SP, 998);
   ASSERT_EQ(cpu.PC, 0x7ACC);
 }
