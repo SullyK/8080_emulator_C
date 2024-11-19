@@ -98,10 +98,16 @@ void conditional_call(CPU *cpu, int high_byte, int low_byte,
 }
 
 void branch_return(CPU *cpu) {
-  uint8_t low_byte = cpu->memory[cpu->SP];
-  uint8_t high_byte = cpu->memory[(cpu->SP) + 1];
+  uint8_t low_byte = cpu->memory[cpu->SP] & 0xFF;
+  uint8_t high_byte = cpu->memory[(cpu->SP) + 1] & 0xFF;
   cpu->PC = (high_byte << 8) | (low_byte & 0xFF);
   cpu->SP += 2;
+//TODO: potential bug fix?
+//Continue here: Find out what this PC increment is meant to be and if I am doing correctly for
+//branch returns
+//compare working online version with mine with a simple script to see where it starts to go
+//wrong
+  cpu->PC +=3;
 }
 
 void conditional_branch_return(CPU *cpu, uint8_t condition) {
@@ -147,6 +153,8 @@ void conditional_branch_return(CPU *cpu, uint8_t condition) {
     uint8_t high_byte = cpu->memory[(cpu->SP) + 1];
     cpu->PC = (high_byte << 8) | (low_byte & 0xFF);
     cpu->SP = cpu->SP + 2;
+// TODO: Potential bug pix? 
+  cpu->PC +=3;
   } else {
     cpu->PC += 1;
   }

@@ -157,6 +157,7 @@ int main(void) {
     }
 
     if (cpu.PC == 0x0005) {
+      printf("hit 0x0005 in the start of the loop before pc executed opcode\n");
       uint8_t C = cpu.registers.C;
       if (C == 0x02) {
         // Print E as an ASCII character
@@ -181,8 +182,10 @@ int main(void) {
     op = cpu.memory[cpu.PC];
     //    if(op != 0xC0 && op != 0xCD){
     printf("Opcode: 0x%02X\n", op);
-    printf("Flags - Z: %d, C: %d, P: %d, S: %d\n", cpu.flags.Z, cpu.flags.C,
-           cpu.flags.P, cpu.flags.S);
+    printf("PC: %u\n", cpu.PC);
+    printf("STACK: %u\n", cpu.SP);
+//    printf("Flags - Z: %d, C: %d, P: %d, S: %d\n", cpu.flags.Z, cpu.flags.C,
+//           cpu.flags.P, cpu.flags.S);
     //   }
     switch (op) {
     case 0x00:
@@ -811,7 +814,7 @@ int main(void) {
       printf("Memory at 0x0114: 0x%02X\n", cpu.memory[0x0114]);
 
       jmp_addr(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1]);
-      update_PC(opcode_size(op), &cpu);
+      //update_PC(opcode_size(op), &cpu);
       break;
     }
       //@@@!!!TODO: skipped this below case for now - IO
@@ -1205,10 +1208,10 @@ int main(void) {
       break;
     }
     case 0xC9: { // RET
-      printf("Before RET: PC=0x%04X, SP=0x%04X\n", cpu.PC, cpu.SP);
+// printf("Before RET: PC=0x%04X, SP=0x%04X\n", cpu.PC, cpu.SP);
       branch_return(&cpu);
-      printf("After RET: PC=0x%04X, SP=0x%04X\n", cpu.PC, cpu.SP);
-      printf("Returning to address: 0x%04X\n", cpu.PC);
+//      printf("After RET: PC=0x%04X, SP=0x%04X\n", cpu.PC, cpu.SP);
+ //     printf("Returning to address: 0x%04X\n", cpu.PC);
       break;
     }
     case 0xD9: { // RET
@@ -1340,11 +1343,6 @@ int main(void) {
     }
 
     case 0xEB: { // XCHG
-		 // @@@TODO: Go to the VS code and check 
-		 // all instructions from where I start 
-		 // are all correct.
-		 // There is no other way :(
-
       exchange_hl_with_de(&cpu);
       update_PC(opcode_size(op), &cpu);
       break;
@@ -1461,11 +1459,11 @@ int main(void) {
       break;
     }
     case 0xCD: { // CALL a16
-      uint16_t addr = (cpu.memory[cpu.PC + 2] << 8) | cpu.memory[cpu.PC + 1];
-      printf("Before CALL: PC=0x%04X, SP=0x%04X, Calling address: 0x%04X\n",
-             cpu.PC, cpu.SP, addr);
+//      uint16_t addr = (cpu.memory[cpu.PC + 2] << 8) | cpu.memory[cpu.PC + 1];
+//      printf("Before CALL: PC=0x%04X, SP=0x%04X, Calling address: 0x%04X\n",
+ //            cpu.PC, cpu.SP, addr);
       call_addr(&cpu, cpu.memory[cpu.PC + 2], cpu.memory[cpu.PC + 1]);
-      printf("After CALL: PC=0x%04X, SP=0x%04X\n", cpu.PC, cpu.SP);
+  //    printf("After CALL: PC=0x%04X, SP=0x%04X\n", cpu.PC, cpu.SP);
       break;
     }
 

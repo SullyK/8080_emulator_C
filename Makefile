@@ -2,7 +2,7 @@ CC = gcc
 CXX = g++ 
 #TODO: make sure the -Werror are set as errors instead of warnings
 #TODO: clear linker errors
-CFLAGS = -Wall -Wextra -pedantic -std=c17 -Werror
+CFLAGS = -g -Wall -Wextra -pedantic -std=c17 -Werror 
 CXXFLAGS = -std=c++17 -I./googletest/googletest/include -I./googletest/googletest -pthread
 LDLIBS = -L./googletest/build/lib -lgtest -lgtest_main
 
